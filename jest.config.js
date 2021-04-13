@@ -5,4 +5,7 @@ module.exports = {
    * May require additional time for downloading MongoDB binaries
    */
   testTimeout: 600000,
+  collectCoverage: true,
+  collectCoverageFrom: ["*.{js}", "!**/node_modules/**"],
+  // roots: ["packages/"]
 };
