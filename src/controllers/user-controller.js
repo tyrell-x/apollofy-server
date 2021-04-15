@@ -1,49 +1,72 @@
 const { UserRepo } = require("../repositories");
 
+const { fbUpdateEmail } = require("../services/auth/auth-provider");
+
 async function signUp(req, res, next) {
-  const { uid, email } = req.user;
+    const { uid, email } = req.user;
 
-  try {
-    const response = await UserRepo.findOne({ email: email });
+    try {
+        const response = await UserRepo.findOne({ _id: uid });
 
-    if (response.error) {
-      return res.status(400).send({
-        data: null,
-        error: response.error,
-      });
+        if (response.error) {
+            return res.status(400).send({
+                data: null,
+                error: response.error,
+            });
+        }
+
+        if (response.data) {
+            return res.status(200).send({
+                data: response.data,
+                error: null,
+            });
+        }
+
+        await UserRepo.create({
+            _id: uid,
+            email: email,
+        });
+
+        res.status(201).send({
+            data: {
+                _id: uid,
+                email: email,
+            },
+            error: null,
+        });
+    } catch (error) {
+        next(error);
     }
-
-    if (response.data) {
-      return res.status(200).send({
-        data: "OK",
-        error: null,
-      });
-    }
-
-    await UserRepo.create({
-      _id: uid,
-      email: email,
-    });
-
-    res.status(201).send({
-      data: "OK",
-      error: null,
-    });
-  } catch (error) {
-    next(error);
-  }
 }
 
 async function signOut(req, res) {
-  req.signOut();
+    req.signOut();
 
-  res.status(200).send({
-    data: "OK",
-    error: null,
-  });
+    res.status(200).send({
+        data: "OK",
+        error: null,
+    });
+}
+
+async function updateEmail(req, res, next) {
+    try {
+        await UserRepo.updateOne(
+            { _id: req.user.uid },
+            { email: req.query.email },
+        );
+        await fbUpdateEmail(req.user.uid, req.query.email);
+
+        return res.status(204).send({
+            data: "OK",
+            error: null,
+        });
+    } catch (error) {
+        next(error);
+    }
 }
 
 module.exports = {
-  signUp: signUp,
-  signOut: signOut,
+    signUp: signUp,
+    signOut: signOut,
+    updateEmail: updateEmail,
 };

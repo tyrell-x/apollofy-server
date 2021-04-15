@@ -8,6 +8,8 @@ const userRouter = Router();
 userRouter.post("/sign-up", authMiddleware, userController.signUp);
 userRouter.post("/sign-out", authMiddleware, userController.signOut);
 
+userRouter.patch("/email", authMiddleware, userController.updateEmail);
+
 module.exports = {
-  userRouter: userRouter,
+    userRouter: userRouter,
 };
