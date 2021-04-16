@@ -25,6 +25,7 @@ async function signUp(req, res, next) {
     await UserRepo.create({
       _id: uid,
       email: email,
+      ...req.body,
     });
 
     res.status(201).send({
