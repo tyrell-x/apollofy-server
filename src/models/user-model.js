@@ -10,8 +10,20 @@ const UserSchema = Schema(
       type: String,
       trim: true,
     },
-    lastName: {
+    familyName: {
       type: String,
+      trim: true,
+    },
+    locale: {
+      type: String,
+      trim: true,
+    },
+    pictureUrl: {
+      type: String,
+      trim: true,
+    },
+    phoneNumer: {
+      type: Number,
       trim: true,
     },
     email: {

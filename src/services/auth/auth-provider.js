@@ -23,6 +23,13 @@ function verifyIdToken(token) {
   return auth.verifyIdToken(token);
 }
 
+function fbUpdateEmail(uid, email) {
+  return auth.updateUser(uid, {
+    email: email,
+  });
+}
+
 module.exports = {
   verifyIdToken: verifyIdToken,
+  fbUpdateEmail: fbUpdateEmail,
 };
