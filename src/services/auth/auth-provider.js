@@ -30,11 +30,6 @@ function fbUpdateEmail(uid, email) {
     email: email,
   });
 }
-function fbUpdatePass(uid, email) {
-  return auth.updateUser(uid, {
-    email: email,
-  });
-}
 
 module.exports = {
   verifyIdToken: verifyIdToken,
