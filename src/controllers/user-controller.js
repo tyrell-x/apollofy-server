@@ -63,8 +63,41 @@ async function updateEmail(req, res, next) {
   }
 }
 
+async function updateUser(req, res, next) {
+  // console.log(req);
+  // console.log();
+  
+  const { firstName, lastName, username } = req.body;
+  const { id } = req.query;
+  console.log(req.query);
+  // console.log(req);
+
+  try {
+    var ObjectId = require('mongodb').ObjectId;
+
+    const response = await UserRepo.findOne({ _id: id });
+    console.log(response);
+   const info =  await UserRepo.updateOne(
+
+      { _id: id },
+      {
+        $set: {
+          firstName: firstName
+          // email: email,
+        },
+      }
+    );
+    // console.log(info);
+
+    res.status(200).send({ data: req.body, error: null });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   signUp: signUp,
   signOut: signOut,
   updateEmail: updateEmail,
+  updateUser: updateUser
 };

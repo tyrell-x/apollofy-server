@@ -19,11 +19,18 @@ admin.initializeApp({
 
 const auth = admin.auth();
 
+// console.log(auth);
+
 function verifyIdToken(token) {
   return auth.verifyIdToken(token);
 }
 
 function fbUpdateEmail(uid, email) {
+  return auth.updateUser(uid, {
+    email: email,
+  });
+}
+function fbUpdatePass(uid, email) {
   return auth.updateUser(uid, {
     email: email,
   });
