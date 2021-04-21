@@ -64,30 +64,18 @@ async function updateEmail(req, res, next) {
 }
 
 async function updateUser(req, res, next) {
-  // console.log(req);
-  // console.log();
-  
-  const { firstName, lastName, username } = req.body;
-  const { id } = req.query;
-  console.log(req.query);
-  // console.log(req);
+
+  const { uid } = req.user
+  console.log(req.user);
 
   try {
-    var ObjectId = require('mongodb').ObjectId;
 
-    const response = await UserRepo.findOne({ _id: id });
-    console.log(response);
-   const info =  await UserRepo.updateOne(
-
-      { _id: id },
+    await UserRepo.updateOne(
+      { _id: uid },
       {
-        $set: {
-          firstName: firstName
-          // email: email,
-        },
+        $set: req.body
       }
     );
-    // console.log(info);
 
     res.status(200).send({ data: req.body, error: null });
   } catch (error) {
