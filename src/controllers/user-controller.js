@@ -63,8 +63,28 @@ async function updateEmail(req, res, next) {
   }
 }
 
+async function updateUser(req, res, next) {
+
+  const { uid } = req.user
+
+  try {
+
+    await UserRepo.updateOne(
+      { _id: uid },
+      {
+        $set: req.body
+      }
+    );
+
+    res.status(200).send({ data: req.body, error: null });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   signUp: signUp,
   signOut: signOut,
   updateEmail: updateEmail,
+  updateUser: updateUser
 };
