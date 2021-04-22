@@ -10,32 +10,33 @@ const TrackSchema = Schema(
     },
     url: {
       type: String,
-      required: false,
+      required: [true, "Url of the song required"],
+      trim: true
     },
     thumbnail: {
       type: String,
-      trim: true,
-      required: false,
+      trim: true
     },
     duration: {
-      type: Number,
-      required: false,
+      type: Number
     },
     rating: {
-      type: Number,
-      required: false
+      type: Number
     },
     color: {
       type: String,
       trim: true,
     },
-    genre: {
-      type: Schema.Types.ObjectId,
-      ref: "genre",
+    genreIds: {
+      type: [
+        {
+          type: String
+        },
+      ],
+      default: [],
     },
     ownedBy: {
-      type: Schema.Types.ObjectId,
-      ref: "user",
+      type: String
     },
     bytes: {
       type: Number,
@@ -46,8 +47,7 @@ const TrackSchema = Schema(
       required: true
     },
     bitRate: {
-      type: Number,
-      required: true
+      type: Number
     },
     isStereo: {
       type: Boolean
