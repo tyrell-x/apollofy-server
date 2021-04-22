@@ -66,7 +66,6 @@ async function updateEmail(req, res, next) {
 async function updateUser(req, res, next) {
 
   const { uid } = req.user
-  console.log(req.user);
 
   try {
 

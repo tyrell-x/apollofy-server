@@ -19,7 +19,6 @@ admin.initializeApp({
 
 const auth = admin.auth();
 
-// console.log(auth);
 
 function verifyIdToken(token) {
   return auth.verifyIdToken(token);

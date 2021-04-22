@@ -10,10 +10,6 @@ class UserRepository {
     return normalizeDBQuery(db.User.findOne(query, "-__v"));
   }
 
-  findOneAndUpdate(query, data) {
-    return normalizeDBQuery(db.User.findOneAndUpdate(query, data, {}));
-  }
-
   updateOne(query, update) {
     return normalizeDBQuery(db.User.updateOne(query, update));
   }
