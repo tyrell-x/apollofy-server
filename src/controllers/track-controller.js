@@ -51,6 +51,11 @@ async function createTrack(req, res, next) {
   }
 }
 
+async function deleteTrack(req, res, next){
+  
+}
+
 module.exports = {
   createTrack: createTrack,
+  deleteTrack: deleteTrack,
 };
