@@ -8,9 +8,9 @@ const trackRouter = Router();
 trackRouter.post("/tracks", authMiddleware, trackController.createTrack);
 
 trackRouter.get("/tracks", authMiddleware, trackController.getTracks);
-trackRouter.get("/tracks/likedBy:id", authMiddleware, trackController.getTrackLikeBy);
+trackRouter.get("/tracks/likedBy:_id", authMiddleware, trackController.getTrackLikeBy);
 
-trackRouter.patch("/tracks/edit:id", authMiddleware, trackController.updateTrack);
+trackRouter.patch("/tracks/edit:_id", authMiddleware, trackController.updateTrack);
 
 module.exports = {
   trackRouter: trackRouter,
