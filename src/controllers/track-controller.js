@@ -52,7 +52,16 @@ async function createTrack(req, res, next) {
 }
 
 async function deleteTrack(req, res, next){
-  
+
+  try {
+    console.log(req);
+
+    await TrackRepo.findOneAndDelete(_id);
+    res.status(200).send({ data: req.body, error: null });
+
+  } catch (error) {
+    next(error)
+  }
 }
 
 module.exports = {

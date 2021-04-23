@@ -9,6 +9,10 @@ class TrackRepository {
   findOne(query) {
     return normalizeDBQuery(db.Track.findOne(query, "-__v"));
   }
+
+  findOnedAndDelete(query) {
+    return normalizeDBQuery(db.Track.findOneAndDelete(query, "-__v"));
+  }
 }
 
 module.exports = new TrackRepository();
