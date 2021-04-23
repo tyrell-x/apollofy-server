@@ -23,6 +23,9 @@ const TrackSchema = Schema(
     rating: {
       type: Number
     },
+    year: {
+      type: Number
+    },
     color: {
       type: String,
       trim: true,
@@ -55,8 +58,7 @@ const TrackSchema = Schema(
     likedBy: {
       type: [
         {
-          type: Schema.Types.ObjectId,
-          ref: "user",
+          type: String
         },
       ],
       default: [],
