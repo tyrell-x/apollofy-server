@@ -74,11 +74,11 @@ async function getTrackLikedBy(req, res, next) {
   } = req;
 
   try {
-    const likeData = await TrackRepo.find({ likedBy: { $all: [_id] } });
+    const likedTracks = await TrackRepo.find({ likedBy: { $all: [_id] } });
 
-    if (likeData) {
+    if (likedTracks) {
       return res.status(200).send({
-        data: likeData,
+        data: likedTracks,
         error: null,
       });
     }
