@@ -29,7 +29,7 @@ async function createTrack(req, res, next) {
           $push: {
             trackIds: trackId,
           },
-        }
+        },
       );
     });
 
@@ -51,17 +51,16 @@ async function createTrack(req, res, next) {
   }
 }
 
-async function deleteTrack(req, res, next){
+async function deleteTrack(req, res, next) {
   const {
-    query: {_id}
+    query: { _id },
   } = req;
 
   try {
     await TrackRepo.findOnedAndDelete(_id);
     res.status(200).send({ data: req.body, error: null });
-
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 

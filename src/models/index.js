@@ -5,5 +5,5 @@ const GenreModel = require("./genre-model");
 module.exports = {
   User: UserModel,
   Track: TrackModel,
-  Genre: GenreModel
+  Genre: GenreModel,
 };

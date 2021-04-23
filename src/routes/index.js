@@ -5,5 +5,5 @@ const { userRouter } = require("./user-routes");
 module.exports = {
   userRouter: userRouter,
   trackRouter: trackRouter,
-  genreRouter: genreRouter
+  genreRouter: genreRouter,
 };
