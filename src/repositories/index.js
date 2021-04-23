@@ -5,5 +5,5 @@ const GenreRepository = require("./genre-repository");
 module.exports = {
   UserRepo: UserRepository,
   TrackRepo: TrackRepository,
-  GenreRepo: GenreRepository
+  GenreRepo: GenreRepository,
 };

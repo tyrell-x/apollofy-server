@@ -3,7 +3,7 @@ const { GenreRepo } = require("../repositories");
 
 async function createTrack(req, res, next) {
   const {
-    body: { genreNames=[], ...trackFields },
+    body: { genreNames = [], ...trackFields },
     user: { uid },
   } = req;
 
@@ -29,7 +29,7 @@ async function createTrack(req, res, next) {
           $push: {
             trackIds: trackId,
           },
-        }
+        },
       );
     });
 
@@ -51,8 +51,7 @@ async function createTrack(req, res, next) {
   }
 }
 
-async function getTracks( req, res, next) {
-
+async function getTracks(req, res, next) {
   try {
     const query = {};
     const response = await TrackRepo.find(query);
@@ -63,8 +62,7 @@ async function getTracks( req, res, next) {
         error: null,
       });
     }
-  }
-  catch (error) {
+  } catch (error) {
     next(error);
   }
 }
@@ -72,11 +70,11 @@ async function getTracks( req, res, next) {
 async function getTrackLikedBy(req, res, next) {
   const {
     query: { _id },
-    user: { uid }
+    user: { uid },
   } = req;
 
   try {
-    const likeData = await TrackRepo.find( { likedBy: {$all: [ _id ] } } )
+    const likeData = await TrackRepo.find({ likedBy: { $all: [_id] } });
 
     if (likeData) {
       return res.status(200).send({
@@ -84,24 +82,23 @@ async function getTrackLikedBy(req, res, next) {
         error: null,
       });
     }
-  }
-  catch (error) {
+  } catch (error) {
     next(error);
   }
 }
 
 async function updateTrack(req, res, next) {
   const {
-    body: { genreNames=[], ...trackFields },
-    query: { _id }
+    body: { genreNames = [], ...trackFields },
+    query: { _id },
   } = req;
 
   try {
     await TrackRepo.updateOne(
       { _id: _id },
       {
-        $set : trackFields
-      }
+        $set: trackFields,
+      },
     );
     res.status(200).send({ data: req.body, error: null });
   } catch (error) {
@@ -113,5 +110,5 @@ module.exports = {
   createTrack: createTrack,
   updateTrack: updateTrack,
   getTrackLikeBy: getTrackLikedBy,
-  getTracks: getTracks
+  getTracks: getTracks,
 };
