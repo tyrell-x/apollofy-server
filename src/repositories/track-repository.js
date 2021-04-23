@@ -11,7 +11,7 @@ class TrackRepository {
   }
 
   findOnedAndDelete(query) {
-    return normalizeDBQuery(db.Track.findOneAndDelete(query, "-__v"));
+    return normalizeDBQuery(db.Track.findOneAndDelete(query));
   }
 }
 
