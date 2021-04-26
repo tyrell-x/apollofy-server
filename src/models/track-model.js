@@ -37,6 +37,7 @@ const TrackSchema = Schema(
     },
     ownedBy: {
       type: String,
+      ref: "user",
     },
     bytes: {
       type: Number,
@@ -55,7 +56,7 @@ const TrackSchema = Schema(
     likedBy: {
       type: [
         {
-          type: Schema.Types.ObjectId,
+          type: String,
           ref: "user",
         },
       ],

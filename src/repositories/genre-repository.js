@@ -30,6 +30,11 @@ class GenreRepository {
       }),
     );
   }
+
+  findOnedAndDelete(query) {
+    return normalizeDBQuery(db.Genre.findOneAndDelete(query));
+  }
+
 }
 
 module.exports = new GenreRepository();

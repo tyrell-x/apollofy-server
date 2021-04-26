@@ -7,8 +7,7 @@ const trackRouter = Router();
 
 trackRouter.post("/tracks", authMiddleware, trackController.createTrack);
 
-trackRouter.delete(
-  "/tracks/delete/:_id",
+trackRouter.delete("/tracks/delete",
   authMiddleware,
   trackController.deleteTrack,
 );
