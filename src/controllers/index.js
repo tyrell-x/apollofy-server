@@ -5,5 +5,5 @@ const genreController = require("./genre-controller.js");
 module.exports = {
   userController: userController,
   trackController: trackController,
-  genreController: genreController
+  genreController: genreController,
 };

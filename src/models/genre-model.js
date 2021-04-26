@@ -8,20 +8,20 @@ const GenreSchema = Schema(
       type: String,
       required: [true, "Genre name is required"],
       trim: true,
-      lowercase: true
+      lowercase: true,
     },
     popularity: {
-      type: Number
+      type: Number,
     },
     trackIds: {
       type: [
         {
           type: Schema.Types.ObjectId,
           ref: "track",
-        }
+        },
       ],
-      default: []
-    }
+      default: [],
+    },
   },
   {
     timestamps: true,
