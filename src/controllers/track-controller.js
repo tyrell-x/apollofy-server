@@ -67,7 +67,7 @@ async function getTracks(req, res, next) {
   }
 }
 
-async function getTrackLikedBy(req, res, next) {
+async function getTracksLikedBy(req, res, next) {
   const {
     query: { _id },
     user: { uid },
@@ -109,6 +109,6 @@ async function updateTrack(req, res, next) {
 module.exports = {
   createTrack: createTrack,
   updateTrack: updateTrack,
-  getTrackLikeBy: getTrackLikedBy,
+  getTracksLikeBy: getTracksLikedBy,
   getTracks: getTracks,
 };
