@@ -23,6 +23,9 @@ const TrackSchema = Schema(
     rating: {
       type: Number,
     },
+    year: {
+      type: Number,
+    },
     color: {
       type: String,
       trim: true,
