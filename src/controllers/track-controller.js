@@ -3,7 +3,7 @@ const { GenreRepo } = require("../repositories");
 
 async function createTrack(req, res, next) {
   const {
-    body: { genreNames, ...trackFields },
+    body: { genreNames = [], ...trackFields },
     user: { uid },
   } = req;
 
@@ -29,7 +29,7 @@ async function createTrack(req, res, next) {
           $push: {
             trackIds: trackId,
           },
-        }
+        },
       );
     });
 
@@ -51,6 +51,64 @@ async function createTrack(req, res, next) {
   }
 }
 
+async function getTracks(req, res, next) {
+  try {
+    const query = {};
+    const response = await TrackRepo.find(query);
+
+    if (response.data) {
+      return res.status(200).send({
+        data: response.data,
+        error: null,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getTracksLikedBy(req, res, next) {
+  const {
+    query: { _id },
+    user: { uid },
+  } = req;
+
+  try {
+    const likedTracks = await TrackRepo.find({ likedBy: { $all: [_id] } });
+
+    if (likedTracks.data) {
+      return res.status(200).send({
+        data: likedTracks,
+        error: null,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function updateTrack(req, res, next) {
+  const {
+    body: { genreNames = [], ...trackFields },
+    query: { _id },
+  } = req;
+
+  try {
+    await TrackRepo.updateOne(
+      { _id: _id },
+      {
+        $set: trackFields,
+      },
+    );
+    res.status(200).send({ data: req.body, error: null });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createTrack: createTrack,
+  updateTrack: updateTrack,
+  getTracksLikeBy: getTracksLikedBy,
+  getTracks: getTracks,
 };
