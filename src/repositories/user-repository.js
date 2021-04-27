@@ -7,7 +7,11 @@ class UserRepository {
   }
 
   findOne(query) {
-    return normalizeDBQuery(db.User.findOne(query, "-__v"));
+    return normalizeDBQuery(db.User.findOne(query));
+  }
+
+  findOnePopulatedBy(populatedBy, query) {
+    return normalizeDBQuery(db.User.findOne(query).populate(populatedBy));
   }
 
   updateOne(query, update) {

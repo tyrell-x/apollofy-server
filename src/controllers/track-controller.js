@@ -1,4 +1,4 @@
-const { TrackRepo } = require("../repositories");
+const { TrackRepo, UserRepo } = require("../repositories");
 const { GenreRepo } = require("../repositories");
 
 async function createTrack(req, res, next) {
@@ -32,6 +32,17 @@ async function createTrack(req, res, next) {
         },
       );
     });
+
+    UserRepo.updateOne(
+      {
+        _id: uid,
+      },
+      {
+        $push: {
+          ownedTracks: trackId,
+        },
+      },
+    );
 
     if (trackResponse.error) {
       return res.status(400).send({
@@ -94,6 +105,7 @@ async function deleteTrack(req, res, next) {
   } = req;
 
   try {
+    //TODO: Remove from liked tracks and owned tracks in users
     const trackResponse = await TrackRepo.findOneAndDelete({ _id: _id });
 
     const genreResponse = await GenreRepo.updateMany(
