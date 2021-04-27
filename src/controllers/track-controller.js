@@ -10,13 +10,13 @@ async function createTrack(req, res, next) {
   try {
     const genreIds = genreNames.map((name) => name.toLowerCase());
 
-    const response = await TrackRepo.create({
+    const trackResponse = await TrackRepo.create({
       ...trackFields,
       genreIds: genreIds,
       ownedBy: uid,
     });
 
-    const trackId = response.data._id;
+    const trackId = trackResponse.data._id;
 
     genreIds.forEach(async (genreId) => {
       await GenreRepo.findOrUpdate(
@@ -33,14 +33,14 @@ async function createTrack(req, res, next) {
       );
     });
 
-    if (response.error) {
-      return res.status(500).send({
+    if (trackResponse.error) {
+      return res.status(400).send({
         data: null,
-        error: response.error,
+        error: trackResponse.error,
       });
     }
 
-    if (response.data) {
+    if (trackResponse.data) {
       return res.status(201).send({
         data: "OK",
         error: null,
@@ -88,8 +88,36 @@ async function updateTrack(req, res, next) {
   }
 }
 
+async function deleteTrack(req, res, next) {
+  const {
+    query: { _id },
+  } = req;
+
+  try {
+    const trackResponse = await TrackRepo.findOneAndDelete({ _id: _id });
+
+    const genreResponse = await GenreRepo.updateMany(
+      { _id: trackResponse.data.genreIds },
+      {
+        $pull: {
+          trackIds: _id,
+        },
+      },
+    );
+
+    if (genreResponse.error) {
+      res.status(400).send({ data: null, error: genreResponse.error });
+    }
+
+    res.status(204).send({ data: "OK", error: null });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createTrack: createTrack,
+  deleteTrack: deleteTrack,
   updateTrack: updateTrack,
   getTracks: getTracks,
 };

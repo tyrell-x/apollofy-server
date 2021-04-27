@@ -34,12 +34,14 @@ const TrackSchema = Schema(
       type: [
         {
           type: String,
+          ref: "genres",
         },
       ],
       default: [],
     },
     ownedBy: {
       type: String,
+      ref: "user",
     },
     bytes: {
       type: Number,
@@ -59,6 +61,7 @@ const TrackSchema = Schema(
       type: [
         {
           type: String,
+          ref: "user",
         },
       ],
       default: [],
