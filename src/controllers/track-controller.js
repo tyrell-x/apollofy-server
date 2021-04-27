@@ -115,13 +115,13 @@ async function deleteTrack(req, res, next) {
     const response = await TrackRepo.findOneAndDelete({ _id: _id });
 
     const genres = await GenreRepo.updateMany(
-      {_id: response.data.genreIds},
+      { _id: response.data.genreIds },
       {
         $pull: {
           trackIds: _id,
-        }
-      }
-      );
+        },
+      },
+    );
     res.status(200).send({ data: "OK", error: null });
   } catch (error) {
     next(error);

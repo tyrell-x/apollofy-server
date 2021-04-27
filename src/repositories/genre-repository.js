@@ -38,7 +38,6 @@ class GenreRepository {
   findOneAndDelete(query) {
     return normalizeDBQuery(db.Genre.findOneAndDelete(query));
   }
-
 }
 
 module.exports = new GenreRepository();
