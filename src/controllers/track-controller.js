@@ -62,10 +62,9 @@ async function createTrack(req, res, next) {
   }
 }
 
-async function getTracks(req, res, next) {
+async function fetchTracks(req, res, next) {
   try {
-    const query = {};
-    const response = await TrackRepo.find(query);
+    const response = await TrackRepo.find({});
 
     if (response.data) {
       return res.status(200).send({
@@ -80,15 +79,12 @@ async function getTracks(req, res, next) {
 
 async function updateTrack(req, res, next) {
   const {
-    //TODO: Update tracks in genres document
-    // eslint-disable-next-line no-unused-vars
-    body: { genreNames = [] },
-    query: { _id },
+    query: { id },
   } = req;
 
   try {
     await TrackRepo.updateOne(
-      { _id: _id },
+      { _id: id },
       {
         $set: req.body,
       },
@@ -101,18 +97,18 @@ async function updateTrack(req, res, next) {
 
 async function deleteTrack(req, res, next) {
   const {
-    query: { _id },
+    query: { id },
   } = req;
 
   try {
     //TODO: Remove from liked tracks and owned tracks in users
-    const trackResponse = await TrackRepo.findOneAndDelete({ _id: _id });
+    const trackResponse = await TrackRepo.findOneAndDelete({ _id: id });
 
     const genreResponse = await GenreRepo.updateMany(
       { _id: trackResponse.data.genreIds },
       {
         $pull: {
-          trackIds: _id,
+          trackIds: id,
         },
       },
     );
@@ -131,5 +127,5 @@ module.exports = {
   createTrack: createTrack,
   deleteTrack: deleteTrack,
   updateTrack: updateTrack,
-  getTracks: getTracks,
+  fetchTracks: fetchTracks,
 };

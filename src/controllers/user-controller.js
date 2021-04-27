@@ -5,15 +5,18 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 const { fbUpdateEmail } = require("../services/auth/auth-provider");
 
-async function getOwnedTracks(req, res, next) {
+async function fetchOwnedTracks(req, res, next) {
   const {
     user: { uid },
   } = req;
 
   try {
-    const userResponse = await UserRepo.findOnePopulatedBy("ownedTracks", {
-      _id: uid,
-    });
+    const userResponse = await UserRepo.findOnePopulatedBy(
+      {
+        _id: uid,
+      },
+      "ownedTracks",
+    );
 
     return res.status(200).send({
       data: userResponse.data.ownedTracks,
@@ -24,15 +27,18 @@ async function getOwnedTracks(req, res, next) {
   }
 }
 
-async function getLikedTracks(req, res, next) {
+async function fetchLikedTracks(req, res, next) {
   const {
     user: { uid },
   } = req;
 
   try {
-    const userResponse = await UserRepo.findOnePopulatedBy("likedTracks", {
-      _id: uid,
-    });
+    const userResponse = await UserRepo.findOnePopulatedBy(
+      {
+        _id: uid,
+      },
+      "likedTracks",
+    );
 
     return res.status(200).send({
       data: userResponse.data.likedTracks,
@@ -172,6 +178,6 @@ module.exports = {
   signOut: signOut,
   updateUser: updateUser,
   likeTrack: likeTrack,
-  getLikedTracks: getLikedTracks,
-  getOwnedTracks: getOwnedTracks,
+  fetchLikedTracks: fetchLikedTracks,
+  fetchOwnedTracks: fetchOwnedTracks,
 };
