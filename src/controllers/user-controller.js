@@ -1,6 +1,45 @@
 const { UserRepo } = require("../repositories");
+const { TrackRepo } = require("../repositories");
+
+const ObjectId = require("mongoose").Types.ObjectId;
 
 const { fbUpdateEmail } = require("../services/auth/auth-provider");
+
+async function likeTrack(req, res, next) {
+  const {
+    query: { trackId },
+    user: { uid },
+  } = req;
+
+  try {
+    const trackResponse = await TrackRepo.findOne({
+      _id: ObjectId(trackId),
+    });
+
+    if (!trackResponse.data) {
+      return res.status(400).send({
+        data: null,
+        error: "Track not found",
+      });
+    }
+
+    await UserRepo.updateOne(
+      { _id: uid },
+      {
+        $push: {
+          likedTracks: trackId,
+        },
+      },
+    );
+
+    return res.status(204).send({
+      data: "OK",
+      error: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
 
 async function signUp(req, res, next) {
   const { uid, email } = req.user;
@@ -49,22 +88,9 @@ async function signOut(req, res) {
   });
 }
 
-async function updateEmail(req, res, next) {
-  try {
-    await UserRepo.updateOne({ _id: req.user.uid }, { email: req.query.email });
-    await fbUpdateEmail(req.user.uid, req.query.email);
-
-    return res.status(204).send({
-      data: "OK",
-      error: null,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
 async function updateUser(req, res, next) {
   const { uid } = req.user;
+  const { email } = req.body;
 
   try {
     await UserRepo.updateOne(
@@ -73,6 +99,10 @@ async function updateUser(req, res, next) {
         $set: req.body,
       },
     );
+
+    if (email) {
+      await fbUpdateEmail(uid, email);
+    }
 
     res.status(200).send({ data: req.body, error: null });
   } catch (error) {
@@ -83,6 +113,6 @@ async function updateUser(req, res, next) {
 module.exports = {
   signUp: signUp,
   signOut: signOut,
-  updateEmail: updateEmail,
   updateUser: updateUser,
+  likeTrack: likeTrack,
 };

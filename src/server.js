@@ -19,9 +19,9 @@ app.use(
   }),
 );
 
-app.use(userRouter);
-app.use(trackRouter);
-app.use(genreRouter);
+app.use("/user", userRouter);
+app.use("/track", trackRouter);
+app.use("/genre", genreRouter);
 
 app.get("/", (req, res) => {
   res.status(200).send({

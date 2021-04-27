@@ -21,7 +21,7 @@ async function createTrack(req, res, next) {
     genreIds.forEach(async (genreId) => {
       await GenreRepo.findOrUpdate(
         {
-          _id: genreId,
+          _id: genreNames,
         },
         {
           _id: genreId,
@@ -67,29 +67,11 @@ async function getTracks(req, res, next) {
   }
 }
 
-async function getTracksLikedBy(req, res, next) {
-  const {
-    query: { _id },
-    user: { uid },
-  } = req;
-
-  try {
-    const likedTracks = await TrackRepo.find({ likedBy: { $all: [_id] } });
-
-    if (likedTracks.data) {
-      return res.status(200).send({
-        data: likedTracks,
-        error: null,
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-}
-
 async function updateTrack(req, res, next) {
   const {
-    body: { genreNames = [], ...trackFields },
+    //TODO: Update tracks in genres document
+    // eslint-disable-next-line no-unused-vars
+    body: { genreNames = [] },
     query: { _id },
   } = req;
 
@@ -97,7 +79,7 @@ async function updateTrack(req, res, next) {
     await TrackRepo.updateOne(
       { _id: _id },
       {
-        $set: trackFields,
+        $set: req.body,
       },
     );
     res.status(200).send({ data: req.body, error: null });
@@ -109,6 +91,5 @@ async function updateTrack(req, res, next) {
 module.exports = {
   createTrack: createTrack,
   updateTrack: updateTrack,
-  getTracksLikeBy: getTracksLikedBy,
   getTracks: getTracks,
 };
