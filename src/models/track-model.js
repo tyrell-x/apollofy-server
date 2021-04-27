@@ -34,6 +34,7 @@ const TrackSchema = Schema(
       type: [
         {
           type: String,
+          ref: 'genres',
         },
       ],
       default: [],

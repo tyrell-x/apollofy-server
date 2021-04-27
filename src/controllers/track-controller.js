@@ -15,7 +15,6 @@ async function createTrack(req, res, next) {
       genreIds: genreIds,
       ownedBy: uid,
     });
-    console.log(uid);
 
     const trackId = response.data._id;
 
@@ -113,9 +112,16 @@ async function deleteTrack(req, res, next) {
   } = req;
 
   try {
-    const trackDelete = await TrackRepo.findOneAndDelete(_id);
-    const genreDelete = await GenreRepo.findOneAndDelete(_id);
-    // populate('ownedBy');
+    const response = await TrackRepo.findOneAndDelete({ _id: _id });
+
+    const genres = await GenreRepo.updateMany(
+      {_id: response.data.genreIds},
+      {
+        $pull: {
+          trackIds: _id,
+        }
+      }
+      );
     res.status(200).send({ data: "OK", error: null });
   } catch (error) {
     next(error);

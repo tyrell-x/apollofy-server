@@ -14,13 +14,14 @@ class TrackRepository {
     return normalizeDBQuery(db.Track.findOne(query, "-__v"));
   }
 
-  findOnedAndDelete(query) {
-    return normalizeDBQuery(db.Track.findOneAndDelete(query));
-  }
-
   updateOne(query, update) {
     return normalizeDBQuery(db.Track.updateOne(query, update));
   }
+
+  findOneAndDelete(query) {
+    return normalizeDBQuery(db.Track.findOneAndDelete(query));
+  }
+
 }
 
 module.exports = new TrackRepository();

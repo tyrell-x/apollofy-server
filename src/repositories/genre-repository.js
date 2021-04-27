@@ -18,6 +18,10 @@ class GenreRepository {
     return normalizeDBQuery(db.Genre.findById(id, "-__v"));
   }
 
+  updateMany(query, update) {
+    return normalizeDBQuery(db.Genre.updateMany(query, update));
+  }
+
   updateOne(query, update) {
     return normalizeDBQuery(db.Genre.updateOne(query, update));
   }
@@ -31,7 +35,7 @@ class GenreRepository {
     );
   }
 
-  findOnedAndDelete(query) {
+  findOneAndDelete(query) {
     return normalizeDBQuery(db.Genre.findOneAndDelete(query));
   }
 
