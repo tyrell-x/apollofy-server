@@ -29,7 +29,16 @@ const UserSchema = Schema(
       type: [
         {
           type: Schema.Types.ObjectId,
-          ref: "tracks",
+          ref: "track",
+        },
+      ],
+      default: [],
+    },
+    ownedTracks: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "track",
         },
       ],
       default: [],

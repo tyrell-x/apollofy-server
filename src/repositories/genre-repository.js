@@ -7,15 +7,15 @@ class GenreRepository {
   }
 
   find(query) {
-    return normalizeDBQuery(db.Genre.find(query, "-__v"));
+    return normalizeDBQuery(db.Genre.find(query));
   }
 
   findOne(query) {
-    return normalizeDBQuery(db.Genre.findOne(query, "-__v"));
+    return normalizeDBQuery(db.Genre.findOne(query));
   }
 
   findById(id) {
-    return normalizeDBQuery(db.Genre.findById(id, "-__v"));
+    return normalizeDBQuery(db.Genre.findById(id));
   }
 
   updateMany(query, update) {

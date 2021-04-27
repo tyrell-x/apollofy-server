@@ -39,10 +39,6 @@ const TrackSchema = Schema(
       ],
       default: [],
     },
-    ownedBy: {
-      type: String,
-      ref: "user",
-    },
     bytes: {
       type: Number,
       required: true,
@@ -56,6 +52,10 @@ const TrackSchema = Schema(
     },
     isStereo: {
       type: Boolean,
+    },
+    ownedBy: {
+      type: String,
+      ref: "user",
     },
     likedBy: {
       type: [

@@ -5,6 +5,44 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 const { fbUpdateEmail } = require("../services/auth/auth-provider");
 
+async function getOwnedTracks(req, res, next) {
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const userResponse = await UserRepo.findOnePopulatedBy("ownedTracks", {
+      _id: uid,
+    });
+
+    return res.status(200).send({
+      data: userResponse.data.ownedTracks,
+      error: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getLikedTracks(req, res, next) {
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const userResponse = await UserRepo.findOnePopulatedBy("likedTracks", {
+      _id: uid,
+    });
+
+    return res.status(200).send({
+      data: userResponse.data.likedTracks,
+      error: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 async function likeTrack(req, res, next) {
   const {
     query: { trackId },
@@ -23,14 +61,33 @@ async function likeTrack(req, res, next) {
       });
     }
 
-    await UserRepo.updateOne(
-      { _id: uid },
-      {
-        $push: {
-          likedTracks: trackId,
-        },
-      },
+    let result = await UserRepo.findOne({ _id: uid });
+    const likedTracks = result.data.likedTracks;
+    const likedTrackIndex = likedTracks.findIndex(
+      (trackIdDb) => trackIdDb == trackId,
     );
+
+    if (likedTrackIndex === -1) {
+      await UserRepo.updateOne(
+        { _id: uid },
+        {
+          $push: {
+            likedTracks: trackId,
+          },
+        },
+      );
+    } else {
+      await UserRepo.updateOne(
+        { _id: uid },
+        {
+          $pull: {
+            likedTracks: trackId,
+          },
+        },
+      );
+    }
+
+    //TODO: Also update likedBy in TrackRepo
 
     return res.status(204).send({
       data: "OK",
@@ -115,4 +172,6 @@ module.exports = {
   signOut: signOut,
   updateUser: updateUser,
   likeTrack: likeTrack,
+  getLikedTracks: getLikedTracks,
+  getOwnedTracks: getOwnedTracks,
 };
