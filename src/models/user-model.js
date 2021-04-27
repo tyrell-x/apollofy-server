@@ -25,6 +25,15 @@ const UserSchema = Schema(
       type: Number,
       trim: true,
     },
+    likedTracks: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "tracks",
+        },
+      ],
+      default: [],
+    },
     email: {
       type: String,
       required: [true, "The email is required"],
