@@ -7,15 +7,19 @@ class TrackRepository {
   }
 
   find(query) {
-    return normalizeDBQuery(db.Track.find(query, "-__v"));
+    return normalizeDBQuery(db.Track.find(query));
   }
 
   findOne(query) {
-    return normalizeDBQuery(db.Track.findOne(query, "-__v"));
+    return normalizeDBQuery(db.Track.findOne(query));
   }
 
   updateOne(query, update) {
     return normalizeDBQuery(db.Track.updateOne(query, update));
+  }
+
+  findOneAndDelete(query) {
+    return normalizeDBQuery(db.Track.findOneAndDelete(query));
   }
 }
 
