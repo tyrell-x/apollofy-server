@@ -63,12 +63,20 @@ async function createTrack(req, res, next) {
 }
 
 async function fetchTracks(req, res, next) {
+  
+  const { uid } = req.user;
+
   try {
     const response = await TrackRepo.find({});
 
+    const tracksData = response.data.map(track => ({
+      ...track._doc,
+      liked: track._doc.likedBy.includes(uid)
+    }));
+
     if (response.data) {
       return res.status(200).send({
-        data: response.data,
+        data: tracksData,
         error: null,
       });
     }
@@ -79,12 +87,13 @@ async function fetchTracks(req, res, next) {
 
 async function updateTrack(req, res, next) {
   const {
-    query: { id },
+    body: { genreNames = [] },
+    params: { _id },
   } = req;
 
   try {
     await TrackRepo.updateOne(
-      { _id: id },
+      { _id: _id },
       {
         $set: req.body,
       },

@@ -56,16 +56,6 @@ async function likeTrack(req, res, next) {
   } = req;
 
   try {
-    const trackResponse = await TrackRepo.findOne({
-      _id: ObjectId(trackId),
-    });
-
-    if (!trackResponse.data) {
-      return res.status(400).send({
-        data: null,
-        error: "Track not found",
-      });
-    }
 
     let result = await UserRepo.findOne({ _id: uid });
     const likedTracks = result.data.likedTracks;
@@ -82,6 +72,13 @@ async function likeTrack(req, res, next) {
           },
         },
       );
+      await TrackRepo.updateOne({
+        _id: ObjectId(trackId),
+      }, {
+        $push: {
+          likedBy: uid
+        }
+      });
     } else {
       await UserRepo.updateOne(
         { _id: uid },
@@ -91,12 +88,19 @@ async function likeTrack(req, res, next) {
           },
         },
       );
+      await TrackRepo.updateOne({
+        _id: ObjectId(trackId),
+      }, {
+        $pull: {
+          likedBy: uid
+        }
+      });
     }
 
     //TODO: Also update likedBy in TrackRepo
 
-    return res.status(204).send({
-      data: "OK",
+    return res.status(200).send({
+      data: {liked: likedTrackIndex === -1},
       error: null,
     });
   } catch (error) {
