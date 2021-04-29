@@ -27,10 +27,6 @@ const PlaylistSchema = Schema(
       required: false,
       default: false,
     },
-    total_tracks: {
-      type: Number,
-      default: 0,
-    },
     author: {
       type: String,
       ref: "user",

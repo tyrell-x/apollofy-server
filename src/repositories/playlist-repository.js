@@ -37,6 +37,10 @@ class PlaylistRepository {
   findPopulatedById(id, populatedWith) {
     return normalizeDBQuery(db.Playlist.findById(id).populate(populatedWith));
   }
+
+  findOneAndDelete(query) {
+    return normalizeDBQuery(db.Playlist.findOneAndDelete(query));
+  }
 }
 
 module.exports = new PlaylistRepository();

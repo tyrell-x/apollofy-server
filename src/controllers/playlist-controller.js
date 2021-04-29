@@ -1,8 +1,10 @@
 const { PlaylistRepo } = require("../repositories");
 
+const ObjectId = require("mongoose").Types.ObjectId;
+
 async function createPlaylist(req, res, next) {
   const {
-    body: { title, publicAccessible, tracks = [] },
+    body: { title, publicAccessible = true, tracks = [] },
     user: { uid },
   } = req;
 
@@ -29,6 +31,26 @@ async function createPlaylist(req, res, next) {
     }
   } catch (err) {
     next(err);
+  }
+}
+
+async function deletePlaylist(req, res, next) {
+  const {
+    query: { id },
+  } = req;
+
+  try {
+    const playlistResponse = await PlaylistRepo.findOneAndDelete({
+      _id: ObjectId(id),
+    });
+
+    if (playlistResponse.error) {
+      res.status(400).send({ data: null, error: playlistResponse.error });
+    }
+
+    res.status(204).send();
+  } catch (error) {
+    next(error);
   }
 }
 
@@ -109,7 +131,9 @@ async function fetchPlaylists(req, res, next) {
   } = req;
 
   try {
-    let dbResponse = fullFetch ? PlaylistRepo.findPopulated(rest, "tracks") : await PlaylistRepo.find(rest);
+    let dbResponse = fullFetch
+      ? PlaylistRepo.findPopulated(rest, "tracks")
+      : await PlaylistRepo.find(rest);
 
     if (dbResponse.error) {
       res.status(400).send({
@@ -134,4 +158,5 @@ module.exports = {
   updatePlaylist: updatePlaylist,
   fetchPlaylists: fetchPlaylists,
   fetchPlaylistById: fetchPlaylistById,
+  deletePlaylist: deletePlaylist,
 };
