@@ -3,11 +3,12 @@ const { playlistService } = require("../services");
 async function createPlaylist(req, res, next) {
   const {
     user: { uid },
+    body: { ...playlist }
   } = req;
 
   try {
-    const playlist = await playlistService.createPlaylist(req.body, uid);
-    return res.status(200).send(playlist);
+    const created = await playlistService.createPlaylist(playlist, uid);
+    return res.status(200).send(created);
   } catch (err) {
     next(err);
   }
@@ -15,7 +16,7 @@ async function createPlaylist(req, res, next) {
 
 async function deletePlaylist(req, res, next) {
   const {
-    query: { id },
+    params: { id },
   } = req;
 
   try {
@@ -28,12 +29,13 @@ async function deletePlaylist(req, res, next) {
 
 async function updatePlaylist(req, res, next) {
   const {
-    query: { id },
+    params: { id },
+    body: { ...playlist }
   } = req;
 
   try {
-    const updatedPlaylist = playlistService.updatePlaylist(id, req.body);
-    return res.status(200).send(updatedPlaylist);
+    const updated = playlistService.updatePlaylist(id, playlist);
+    return res.status(200).send(updated);
   } catch (err) {
     next(err);
   }

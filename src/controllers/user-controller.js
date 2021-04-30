@@ -8,7 +8,7 @@ async function fetchOwnedTracks(req, res, next) {
   } = req;
 
   try {
-    const ownedTracks = userService.getOwnedTracks(uid);
+    const ownedTracks = await userService.getOwnedTracks(uid);
     return res.status(200).send(ownedTracks);
   } catch (error) {
     next(error);
@@ -69,35 +69,37 @@ async function followPlaylist(req, res, next) {
 }
 
 async function signUp(req, res, next) {
-  const { uid } = req.user;
+  const {
+    user: { uid },
+    body: { _id, ...user },
+  } = req;
 
   if (req.body?.email === null) {
     return res.status(400).send("unkown request");
   }
 
   try {
-    const user = await userService.findOrCreateUser(uid, req.body);
-    res.status(200).send(user);
+    const current = await userService.findOrCreateUser(uid, user);
+    res.status(200).send(current);
   } catch (error) {
     next(error);
   }
 }
 
-async function signOut(req, res) {
-  req.signOut();
-  res.status(200).send();
-}
-
 async function updateUser(req, res, next) {
-  const { uid } = req.user;
-  const { email } = req.body;
+  const {
+    user: { uid },
+    body: { email },
+  } = req;
+
+  const user = req.body;
 
   try {
     if (email) {
       await fbUpdateEmail(uid, email);
     }
 
-    const updated = userService.updateUser(uid, req.body);
+    const updated = userService.updateUser(uid, user);
 
     res.status(200).send(updated);
   } catch (error) {
@@ -107,7 +109,6 @@ async function updateUser(req, res, next) {
 
 module.exports = {
   signUp: signUp,
-  signOut: signOut,
   updateUser: updateUser,
   likeTrack: likeTrack,
   followPlaylist: followPlaylist,

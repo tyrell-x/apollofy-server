@@ -39,7 +39,10 @@ class UserService {
       .findById(id)
       .populate("likedTracks")
       .select("likedTracks");
-    return user.likedTracks;
+    return user.likedTracks.map((track) => ({
+      ...track,
+      liked: true,
+    }));
   }
 
   addLikedTrack(id, trackId) {

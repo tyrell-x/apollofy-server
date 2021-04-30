@@ -45,12 +45,12 @@ async function fetchTracks(req, res, next) {
 
 async function updateTrack(req, res, next) {
   const {
-    body: { track },
-    params: { _id },
+    params: { id },
+    body: { ...track },
   } = req;
 
   try {
-    const updatedTrack = trackService.updateTrack(_id, track);
+    const updatedTrack = trackService.updateTrack(id, track);
     return res.status(200).send(updatedTrack);
   } catch (error) {
     next(error);
@@ -59,7 +59,7 @@ async function updateTrack(req, res, next) {
 
 async function deleteTrack(req, res, next) {
   const {
-    query: { id },
+    params: { id },
   } = req;
 
   try {

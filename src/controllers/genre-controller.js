@@ -1,8 +1,12 @@
 const { genreService } = require("../services");
 
 async function createGenre(req, res, next) {
+  const {
+    body: { ...genre },
+  } = req;
+
   try {
-    const newGenre = genreService.createGenre(req.body);
+    const newGenre = genreService.createGenre(genre);
     return res.status(200).send(newGenre);
   } catch (err) {
     next(err);
