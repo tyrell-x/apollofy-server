@@ -1,6 +1,5 @@
 const { trackService, genreService } = require("../services");
 const userService = require("../services/user-service.js");
-const { removeTrackFromGenres } = require("../services/genre-service.js");
 
 async function createTrack(req, res, next) {
   const {
@@ -19,7 +18,6 @@ async function createTrack(req, res, next) {
       genres.map((genre) => genre._id),
       newTrack._id,
     );
-
     await userService.addOwnedTrack(uid, newTrack._id);
 
     return res.status(200).send(newTrack);
@@ -33,13 +31,13 @@ async function fetchTracks(req, res, next) {
 
   try {
     const tracks = await trackService.getTracks();
-    const tracksWithLikedAndOwned = tracks.map(track => ({
+    const tracksWithLikedAndOwned = tracks.map((track) => ({
       ...track,
       liked: track.likedBy.includes(uid),
-      owned: track.ownedBy === uid
-    }))
+      owned: track.ownedBy === uid,
+    }));
 
-    return res.status(200).send(tracksWithLikedAndOwned)
+    return res.status(200).send(tracksWithLikedAndOwned);
   } catch (error) {
     next(error);
   }
@@ -65,8 +63,8 @@ async function deleteTrack(req, res, next) {
   } = req;
 
   try {
-    const deletedTrack = await trackService.deleteTrack(id)
-    await removeTrackFromGenres(deletedTrack.genreIds)
+    const deletedTrack = await trackService.deleteTrack(id);
+    await genreService.removeTrackFromGenres(deletedTrack.genreIds);
     return res.status(204).send();
   } catch (error) {
     next(error);

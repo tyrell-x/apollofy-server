@@ -7,5 +7,5 @@ module.exports = {
   userController: userController,
   trackController: trackController,
   genreController: genreController,
-  playlistController: playlistController
+  playlistController: playlistController,
 };

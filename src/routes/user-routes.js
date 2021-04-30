@@ -19,6 +19,11 @@ userRouter.post("/me/sign-up", authMiddleware, userController.signUp);
 userRouter.post("/me/sign-out", authMiddleware, userController.signOut);
 userRouter.patch("/me/edit", authMiddleware, userController.updateUser);
 userRouter.post("/me/liketrack", authMiddleware, userController.likeTrack);
+userRouter.post(
+  "/me/followPlaylist",
+  authMiddleware,
+  userController.followPlaylist,
+);
 
 module.exports = {
   userRouter: userRouter,

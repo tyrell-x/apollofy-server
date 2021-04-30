@@ -16,7 +16,8 @@ const TrackSchema = Schema(
     thumbnail: {
       type: String,
       trim: true,
-      default: 'https://zerojackerzz.com/wp-content/uploads/2019/10/album-placeholder.png'
+      default:
+        "https://zerojackerzz.com/wp-content/uploads/2019/10/album-placeholder.png",
     },
     duration: {
       type: Number,

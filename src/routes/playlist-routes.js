@@ -6,14 +6,17 @@ const { playlistController } = require("../controllers");
 const playlistRouter = Router();
 
 playlistRouter.get("/", authMiddleware, playlistController.fetchPlaylists);
-playlistRouter.get(
+playlistRouter.post("/", authMiddleware, playlistController.createPlaylist);
+playlistRouter.put(
+  "/edit/:id",
+  authMiddleware,
+  playlistController.updatePlaylist,
+);
+playlistRouter.delete(
   "/:id",
   authMiddleware,
-  playlistController.fetchPlaylistById,
+  playlistController.deletePlaylist,
 );
-playlistRouter.post("/", authMiddleware, playlistController.createPlaylist);
-playlistRouter.put("/", authMiddleware, playlistController.updatePlaylist);
-playlistRouter.delete("/", authMiddleware, playlistController.deletePlaylist);
 
 module.exports = {
   playlistRouter: playlistRouter,

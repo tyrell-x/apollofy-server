@@ -15,6 +15,28 @@ class TrackService {
     });
   }
 
+  addLikedBy(id, uid) {
+    return trackModel.updateOne(
+      { _id: id },
+      {
+        $addToSet: {
+          likedBy: uid,
+        },
+      },
+    );
+  }
+
+  removeLikedBy(id, uid) {
+    return trackModel.updateOne(
+      { _id: id },
+      {
+        $pull: {
+          likedBy: uid,
+        },
+      },
+    );
+  }
+
   deleteTrack(id) {
     return trackModel.findByIdAndDelete(id);
   }

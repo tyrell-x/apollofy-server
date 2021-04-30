@@ -1,6 +1,18 @@
 const genreModel = require("../models/genre-model");
 
 class GenreService {
+  getGenres(filter = {}) {
+    return genreModel.find(filter).lean();
+  }
+
+  getGenreById(id) {
+    return genreModel.findById(id);
+  }
+
+  createGenre(genre) {
+    return genreModel.create(genre);
+  }
+
   createGenres(genres) {
     return genreModel.insertMany(genres);
   }
@@ -22,11 +34,11 @@ class GenreService {
     );
   }
 
-  addTrackToGenres(genreIds, trackId) {
+  addTrackToGenres(ids, trackId) {
     return genreModel.updateMany(
       {
         _id: {
-          $in: genreIds,
+          $in: ids,
         },
       },
       {
@@ -37,9 +49,9 @@ class GenreService {
     );
   }
 
-  removeTrackFromGenres(genreIds, trackId) {
+  removeTrackFromGenres(ids, trackId) {
     return genreModel.updateMany(
-      { _id: genreIds },
+      { _id: ids },
       {
         $pull: {
           trackIds: trackId,

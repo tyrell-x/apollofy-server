@@ -45,6 +45,24 @@ const UserSchema = Schema(
       ],
       default: [],
     },
+    followedPlaylists: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "playlist",
+        },
+      ],
+      default: [],
+    },
+    ownedPlaylists: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: "playlist",
+        },
+      ],
+      default: [],
+    },
     email: {
       type: String,
       required: [true, "The email is required"],

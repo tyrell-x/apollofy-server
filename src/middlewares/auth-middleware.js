@@ -1,4 +1,5 @@
-const { auth, logger } = require("../services");
+const { auth } = require("../services");
+const logger = require("../logger");
 
 async function authMiddleware(req, res, next) {
   try {
@@ -11,10 +12,7 @@ async function authMiddleware(req, res, next) {
   } catch (error) {
     logger.debug(error);
 
-    res.status(401).send({
-      data: null,
-      error: "Unauthorized",
-    });
+    res.status(401).send("Unauthorized");
   }
 }
 
