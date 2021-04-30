@@ -11,7 +11,6 @@ async function authMiddleware(req, res, next) {
     next();
   } catch (error) {
     logger.debug(error);
-
     res.status(401).send("Unauthorized");
   }
 }
