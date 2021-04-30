@@ -10,8 +10,8 @@ class UserRepository {
     return normalizeDBQuery(db.User.findOne(query));
   }
 
-  findOnePopulatedBy(populatedBy, query) {
-    return normalizeDBQuery(db.User.findOne(query).populate(populatedBy));
+  findOnePopulatedBy(query, populatedWith) {
+    return normalizeDBQuery(db.User.findOne(query).populate(populatedWith));
   }
 
   updateOne(query, update) {

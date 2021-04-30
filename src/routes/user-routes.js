@@ -8,12 +8,12 @@ const userRouter = Router();
 userRouter.get(
   "/me/tracks/owned",
   authMiddleware,
-  userController.getOwnedTracks,
+  userController.fetchOwnedTracks,
 );
 userRouter.get(
   "/me/tracks/liked",
   authMiddleware,
-  userController.getLikedTracks,
+  userController.fetchLikedTracks,
 );
 userRouter.post("/me/sign-up", authMiddleware, userController.signUp);
 userRouter.post("/me/sign-out", authMiddleware, userController.signOut);

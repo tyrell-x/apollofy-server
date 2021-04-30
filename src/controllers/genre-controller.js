@@ -25,10 +25,10 @@ async function createGenre(req, res, next) {
 }
 
 async function fetchGenres(req, res, next) {
-  const { params } = req;
+  const { query } = req;
 
   try {
-    const dbResponse = await GenreRepo.find(params);
+    const dbResponse = await GenreRepo.find(query);
     handleDbResponse(res, dbResponse);
   } catch (err) {
     next(err);
@@ -37,7 +37,7 @@ async function fetchGenres(req, res, next) {
 
 async function fetchGenreById(req, res, next) {
   const {
-    params: { id },
+    query: { id },
   } = req;
   try {
     const dbResponse = await GenreRepo.findById(id);
@@ -49,7 +49,7 @@ async function fetchGenreById(req, res, next) {
 
 async function fetchGenreByName(req, res, next) {
   const {
-    params: { name },
+    query: { name },
   } = req;
   try {
     const dbResponse = await GenreRepo.findOne({
