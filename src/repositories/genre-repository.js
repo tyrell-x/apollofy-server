@@ -2,41 +2,45 @@ const db = require("../models");
 const normalizeDBQuery = require("../utils/normalizeDBQuery");
 
 class GenreRepository {
-  create(options) {
-    return normalizeDBQuery(db.Genre.create(options));
+  create(doc) {
+    return normalizeDBQuery(db.Genre.create(doc));
   }
 
-  find(query) {
-    return normalizeDBQuery(db.Genre.find(query));
+  insertMany(doc) {
+    return normalizeDBQuery(db.Genre.insertMany(doc));
   }
 
-  findOne(query) {
-    return normalizeDBQuery(db.Genre.findOne(query));
+  find(filter) {
+    return normalizeDBQuery(db.Genre.find(filter));
+  }
+
+  findOne(filter) {
+    return normalizeDBQuery(db.Genre.findOne(filter));
   }
 
   findById(id) {
     return normalizeDBQuery(db.Genre.findById(id));
   }
 
-  updateMany(query, update) {
-    return normalizeDBQuery(db.Genre.updateMany(query, update));
-  }
-
-  updateOne(query, update) {
-    return normalizeDBQuery(db.Genre.updateOne(query, update));
-  }
-
-  findOrUpdate(query, update) {
+  findOrUpdate(filter, update) {
     return normalizeDBQuery(
-      db.Genre.findOneAndUpdate(query, update, {
+      db.Genre.findOneAndUpdate(filter, update, {
         upsert: true,
         returnOriginal: false,
       }),
     );
   }
 
-  findOneAndDelete(query) {
-    return normalizeDBQuery(db.Genre.findOneAndDelete(query));
+  findOneAndDelete(filter) {
+    return normalizeDBQuery(db.Genre.findOneAndDelete(filter));
+  }
+
+  updateMany(filter, update) {
+    return normalizeDBQuery(db.Genre.updateMany(filter, update));
+  }
+
+  updateOne(filter, update) {
+    return normalizeDBQuery(db.Genre.updateOne(filter, update));
   }
 }
 

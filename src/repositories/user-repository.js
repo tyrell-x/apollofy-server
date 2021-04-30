@@ -2,20 +2,20 @@ const db = require("../models");
 const normalizeDBQuery = require("../utils/normalizeDBQuery");
 
 class UserRepository {
-  create(options) {
-    return normalizeDBQuery(db.User.create(options));
+  create(doc) {
+    return normalizeDBQuery(db.User.create(doc));
   }
 
-  findOne(query) {
-    return normalizeDBQuery(db.User.findOne(query));
+  findOne(filter) {
+    return normalizeDBQuery(db.User.findOne(filter));
   }
 
-  findOnePopulatedBy(query, populatedWith) {
-    return normalizeDBQuery(db.User.findOne(query).populate(populatedWith));
+  findOnePopulated(filter, populatedWith) {
+    return normalizeDBQuery(db.User.findOne(filter).populate(populatedWith));
   }
 
-  updateOne(query, update) {
-    return normalizeDBQuery(db.User.updateOne(query, update));
+  updateOne(filter, update) {
+    return normalizeDBQuery(db.User.updateOne(filter, update));
   }
 }
 

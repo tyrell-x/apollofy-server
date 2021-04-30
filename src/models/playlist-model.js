@@ -9,23 +9,19 @@ const PlaylistSchema = Schema(
       trim: true,
     },
     description: {
-      type: String,
-      required: false,
+      type: String
     },
     collaborative: {
       type: Boolean,
-      required: false,
-      default: false,
+      default: false
     },
     thumbnail: {
       type: String,
-      trim: true,
-      required: false,
+      trim: true
     },
     publicAccessible: {
       type: Boolean,
-      required: false,
-      default: false,
+      default: false
     },
     author: {
       type: String,

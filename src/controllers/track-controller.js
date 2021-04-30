@@ -1,85 +1,45 @@
-const { TrackRepo, UserRepo } = require("../repositories");
-const { GenreRepo } = require("../repositories");
+const { trackService, genreService } = require("../services");
+const userService = require("../services/user-service.js");
+const { removeTrackFromGenres } = require("../services/genre-service.js");
 
 async function createTrack(req, res, next) {
   const {
-    body: { genreNames = [], ...trackFields },
+    body: { genreNames = [], ...track },
     user: { uid },
   } = req;
 
   try {
-    const genreIds = genreNames.map((name) => name.toLowerCase());
-
-    const trackResponse = await TrackRepo.create({
-      ...trackFields,
-      genreIds: genreIds,
+    const genres = await genreService.createGenresWithNames(genreNames);
+    const newTrack = await trackService.createTrack({
+      ...track,
+      genreIds: genres.map((genre) => genre._id),
       ownedBy: uid,
     });
-
-    const trackId = trackResponse.data._id;
-
-    genreIds.forEach(async (genreId) => {
-      await GenreRepo.findOrUpdate(
-        {
-          _id: genreNames,
-        },
-        {
-          _id: genreId,
-          name: genreId,
-          $push: {
-            trackIds: trackId,
-          },
-        },
-      );
-    });
-
-    UserRepo.updateOne(
-      {
-        _id: uid,
-      },
-      {
-        $push: {
-          ownedTracks: trackId,
-        },
-      },
+    await genreService.addTrackToGenres(
+      genres.map((genre) => genre._id),
+      newTrack._id,
     );
 
-    if (trackResponse.error) {
-      return res.status(400).send({
-        data: null,
-        error: trackResponse.error,
-      });
-    }
+    await userService.addOwnedTrack(uid, newTrack._id);
 
-    if (trackResponse.data) {
-      return res.status(201).send({
-        data: "OK",
-        error: null,
-      });
-    }
+    return res.status(200).send(newTrack);
   } catch (error) {
     next(error);
   }
 }
 
 async function fetchTracks(req, res, next) {
-  
   const { uid } = req.user;
 
   try {
-    const response = await TrackRepo.find({});
+    const tracks = await trackService.getTracks();
+    const tracksWithLikedAndOwned = tracks.map(track => ({
+      ...track,
+      liked: track.likedBy.includes(uid),
+      owned: track.ownedBy === uid
+    }))
 
-    const tracksData = response.data.map(track => ({
-      ...track._doc,
-      liked: track._doc.likedBy.includes(uid)
-    }));
-
-    if (response.data) {
-      return res.status(200).send({
-        data: tracksData,
-        error: null,
-      });
-    }
+    return res.status(200).send(tracksWithLikedAndOwned)
   } catch (error) {
     next(error);
   }
@@ -87,18 +47,13 @@ async function fetchTracks(req, res, next) {
 
 async function updateTrack(req, res, next) {
   const {
-    body: { genreNames = [] },
+    body: { track },
     params: { _id },
   } = req;
 
   try {
-    await TrackRepo.updateOne(
-      { _id: _id },
-      {
-        $set: req.body,
-      },
-    );
-    res.status(200).send({ data: req.body, error: null });
+    const updatedTrack = trackService.updateTrack(_id, track);
+    return res.status(200).send(updatedTrack);
   } catch (error) {
     next(error);
   }
@@ -110,23 +65,9 @@ async function deleteTrack(req, res, next) {
   } = req;
 
   try {
-    //TODO: Remove from liked tracks and owned tracks in users
-    const trackResponse = await TrackRepo.findOneAndDelete({ _id: id });
-
-    const genreResponse = await GenreRepo.updateMany(
-      { _id: trackResponse.data.genreIds },
-      {
-        $pull: {
-          trackIds: id,
-        },
-      },
-    );
-
-    if (genreResponse.error) {
-      res.status(400).send({ data: null, error: genreResponse.error });
-    }
-
-    res.status(204).send({ data: "OK", error: null });
+    const deletedTrack = await trackService.deleteTrack(id)
+    await removeTrackFromGenres(deletedTrack.genreIds)
+    return res.status(204).send();
   } catch (error) {
     next(error);
   }

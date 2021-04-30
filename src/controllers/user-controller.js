@@ -1,8 +1,6 @@
 const { UserRepo } = require("../repositories");
 const { TrackRepo } = require("../repositories");
-
-const ObjectId = require("mongoose").Types.ObjectId;
-
+const { userService } = require("../services");
 const { fbUpdateEmail } = require("../services/auth/auth-provider");
 
 async function fetchOwnedTracks(req, res, next) {
@@ -11,17 +9,8 @@ async function fetchOwnedTracks(req, res, next) {
   } = req;
 
   try {
-    const userResponse = await UserRepo.findOnePopulatedBy(
-      {
-        _id: uid,
-      },
-      "ownedTracks",
-    );
-
-    return res.status(200).send({
-      data: userResponse.data.ownedTracks,
-      error: null,
-    });
+    const ownedTracks = userService.getOwnedTracks(uid)
+    return res.status(200).send(ownedTracks);
   } catch (error) {
     next(error);
   }
@@ -33,17 +22,8 @@ async function fetchLikedTracks(req, res, next) {
   } = req;
 
   try {
-    const userResponse = await UserRepo.findOnePopulatedBy(
-      {
-        _id: uid,
-      },
-      "likedTracks",
-    );
-
-    return res.status(200).send({
-      data: userResponse.data.likedTracks,
-      error: null,
-    });
+    const likedTracks = await userService.getLikedTracks(uid)
+    return res.status(200).send(likedTracks);
   } catch (error) {
     next(error);
   }
@@ -57,52 +37,11 @@ async function likeTrack(req, res, next) {
 
   try {
 
-    let result = await UserRepo.findOne({ _id: uid });
-    const likedTracks = result.data.likedTracks;
-    const likedTrackIndex = likedTracks.findIndex(
-      (trackIdDb) => trackIdDb == trackId,
-    );
-
-    if (likedTrackIndex === -1) {
-      await UserRepo.updateOne(
-        { _id: uid },
-        {
-          $push: {
-            likedTracks: trackId,
-          },
-        },
-      );
-      await TrackRepo.updateOne({
-        _id: ObjectId(trackId),
-      }, {
-        $push: {
-          likedBy: uid
-        }
-      });
-    } else {
-      await UserRepo.updateOne(
-        { _id: uid },
-        {
-          $pull: {
-            likedTracks: trackId,
-          },
-        },
-      );
-      await TrackRepo.updateOne({
-        _id: ObjectId(trackId),
-      }, {
-        $pull: {
-          likedBy: uid
-        }
-      });
-    }
+    let result = await userService.toggleLikedTrack(uid, trackId)
 
     //TODO: Also update likedBy in TrackRepo
 
-    return res.status(200).send({
-      data: {liked: likedTrackIndex === -1},
-      error: null,
-    });
+    return res.status(200).send(result);
   } catch (error) {
     next(error);
   }
