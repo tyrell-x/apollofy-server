@@ -10,21 +10,17 @@ const PlaylistSchema = Schema(
     },
     description: {
       type: String,
-      required: false,
     },
     collaborative: {
       type: Boolean,
-      required: false,
       default: false,
     },
     thumbnail: {
       type: String,
       trim: true,
-      required: false,
     },
     publicAccessible: {
       type: Boolean,
-      required: false,
       default: false,
     },
     author: {

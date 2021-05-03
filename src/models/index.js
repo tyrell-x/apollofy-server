@@ -7,5 +7,5 @@ module.exports = {
   User: UserModel,
   Track: TrackModel,
   Genre: GenreModel,
-  Playlist: PlaylistModel
+  Playlist: PlaylistModel,
 };

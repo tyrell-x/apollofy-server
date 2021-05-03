@@ -1,9 +1,6 @@
-const { UserRepo } = require("../repositories");
-const { TrackRepo } = require("../repositories");
-
-const ObjectId = require("mongoose").Types.ObjectId;
-
+const { userService, trackService } = require("../services");
 const { fbUpdateEmail } = require("../services/auth/auth-provider");
+const playlistService = require("../services/playlist-service.js");
 
 async function fetchOwnedTracks(req, res, next) {
   const {
@@ -11,17 +8,8 @@ async function fetchOwnedTracks(req, res, next) {
   } = req;
 
   try {
-    const userResponse = await UserRepo.findOnePopulatedBy(
-      {
-        _id: uid,
-      },
-      "ownedTracks",
-    );
-
-    return res.status(200).send({
-      data: userResponse.data.ownedTracks,
-      error: null,
-    });
+    const ownedTracks = await userService.getOwnedTracks(uid);
+    return res.status(200).send(ownedTracks);
   } catch (error) {
     next(error);
   }
@@ -33,17 +21,8 @@ async function fetchLikedTracks(req, res, next) {
   } = req;
 
   try {
-    const userResponse = await UserRepo.findOnePopulatedBy(
-      {
-        _id: uid,
-      },
-      "likedTracks",
-    );
-
-    return res.status(200).send({
-      data: userResponse.data.likedTracks,
-      error: null,
-    });
+    const likedTracks = await userService.getLikedTracks(uid);
+    return res.status(200).send(likedTracks);
   } catch (error) {
     next(error);
   }
@@ -51,127 +30,78 @@ async function fetchLikedTracks(req, res, next) {
 
 async function likeTrack(req, res, next) {
   const {
-    query: { trackId },
+    query: { trackId, liked },
     user: { uid },
   } = req;
 
   try {
-
-    let result = await UserRepo.findOne({ _id: uid });
-    const likedTracks = result.data.likedTracks;
-    const likedTrackIndex = likedTracks.findIndex(
-      (trackIdDb) => trackIdDb == trackId,
-    );
-
-    if (likedTrackIndex === -1) {
-      await UserRepo.updateOne(
-        { _id: uid },
-        {
-          $push: {
-            likedTracks: trackId,
-          },
-        },
-      );
-      await TrackRepo.updateOne({
-        _id: ObjectId(trackId),
-      }, {
-        $push: {
-          likedBy: uid
-        }
-      });
+    if (liked) {
+      await userService.addLikedTrack(uid, trackId);
+      await trackService.addLikedBy(trackId, uid);
     } else {
-      await UserRepo.updateOne(
-        { _id: uid },
-        {
-          $pull: {
-            likedTracks: trackId,
-          },
-        },
-      );
-      await TrackRepo.updateOne({
-        _id: ObjectId(trackId),
-      }, {
-        $pull: {
-          likedBy: uid
-        }
-      });
+      await userService.removeLikedTrack(uid, trackId);
+      await trackService.removeLikedBy(trackId, uid);
     }
+    return res.status(200).send(liked);
+  } catch (error) {
+    next(error);
+  }
+}
 
-    //TODO: Also update likedBy in TrackRepo
+async function followPlaylist(req, res, next) {
+  const {
+    query: { playlistId, followed },
+    user: { uid },
+  } = req;
 
-    return res.status(200).send({
-      data: {liked: likedTrackIndex === -1},
-      error: null,
-    });
+  try {
+    if (followed) {
+      await userService.addFollowedPlaylist(uid, playlistId);
+      await playlistService.addFollowedBy(playlistId, uid);
+    } else {
+      await userService.removeFollowedPlaylist(uid, playlistId);
+      await playlistService.removeFollowedBy(playlistId, uid);
+    }
+    return res.status(200).send(followed);
   } catch (error) {
     next(error);
   }
 }
 
 async function signUp(req, res, next) {
-  const { uid, email } = req.user;
+  const {
+    user: { uid },
+    body: { _id, ...user },
+  } = req;
+
+  if (req.body?.email === null) {
+    return res.status(400).send("unkown request");
+  }
 
   try {
-    const response = await UserRepo.findOne({ _id: uid });
-
-    if (response.error) {
-      return res.status(400).send({
-        data: null,
-        error: response.error,
-      });
-    }
-
-    if (response.data) {
-      return res.status(200).send({
-        data: response.data,
-        error: null,
-      });
-    }
-
-    await UserRepo.create({
-      _id: uid,
-      email: email,
-      ...req.body,
-    });
-
-    res.status(201).send({
-      data: {
-        _id: uid,
-        email: email,
-      },
-      error: null,
-    });
+    const current = await userService.findOrCreateUser(uid, user);
+    res.status(200).send(current);
   } catch (error) {
     next(error);
   }
 }
 
-async function signOut(req, res) {
-  req.signOut();
-
-  res.status(200).send({
-    data: "OK",
-    error: null,
-  });
-}
-
 async function updateUser(req, res, next) {
-  const { uid } = req.user;
-  const { email } = req.body;
+  const {
+    user: { uid },
+    body: { email },
+  } = req;
+
+  const user = req.body;
 
   try {
-    await UserRepo.updateOne(
-      { _id: uid },
-      {
-        $set: req.body,
-      },
-    );
-
     if (email) {
       await fbUpdateEmail(uid, email);
     }
 
-    res.status(200).send({ data: req.body, error: null });
+    const updated = userService.updateUser(uid, user);
+
+    res.status(200).send(updated);
   } catch (error) {
     next(error);
   }
@@ -179,9 +109,9 @@ async function updateUser(req, res, next) {
 
 module.exports = {
   signUp: signUp,
-  signOut: signOut,
   updateUser: updateUser,
   likeTrack: likeTrack,
+  followPlaylist: followPlaylist,
   fetchLikedTracks: fetchLikedTracks,
   fetchOwnedTracks: fetchOwnedTracks,
 };
