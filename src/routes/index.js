@@ -7,5 +7,5 @@ module.exports = {
   userRouter: userRouter,
   trackRouter: trackRouter,
   genreRouter: genreRouter,
-  playlistRouter: playlistRouter
+  playlistRouter: playlistRouter,
 };

@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const { logger } = require("../services");
+const logger = require("../logger");
 
 const {
   NODE_ENV = "development",

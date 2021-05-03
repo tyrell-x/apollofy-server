@@ -3,21 +3,18 @@ const { Schema } = require("mongoose");
 
 const GenreSchema = Schema(
   {
-    _id: String,
     name: {
       type: String,
-      required: [true, "Genre name is required"],
+      required: [true, "Name for genre is required"],
       trim: true,
+      unique: true,
       lowercase: true,
-    },
-    popularity: {
-      type: Number,
     },
     trackIds: {
       type: [
         {
           type: Schema.Types.ObjectId,
-          ref: "tracks",
+          ref: "track",
         },
       ],
       default: [],

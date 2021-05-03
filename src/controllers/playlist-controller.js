@@ -1,34 +1,14 @@
-const { PlaylistRepo } = require("../repositories");
-
-const ObjectId = require("mongoose").Types.ObjectId;
+const { playlistService } = require("../services");
 
 async function createPlaylist(req, res, next) {
   const {
-    body: { title, publicAccessible = true, tracks = [] },
     user: { uid },
+    body: { ...playlist }
   } = req;
 
   try {
-    const dbResponse = await PlaylistRepo.create({
-      title: title,
-      author: uid,
-      publicAccessible: publicAccessible,
-      tracks: tracks,
-    });
-
-    if (dbResponse.error) {
-      res.status(400).send({
-        data: null,
-        error: dbResponse.error,
-      });
-    }
-
-    if (dbResponse.data) {
-      res.status(201).send({
-        data: dbResponse.data,
-        error: null,
-      });
-    }
+    const created = await playlistService.createPlaylist(playlist, uid);
+    return res.status(200).send(created);
   } catch (err) {
     next(err);
   }
@@ -36,18 +16,11 @@ async function createPlaylist(req, res, next) {
 
 async function deletePlaylist(req, res, next) {
   const {
-    query: { id },
+    params: { id },
   } = req;
 
   try {
-    const playlistResponse = await PlaylistRepo.findOneAndDelete({
-      _id: ObjectId(id),
-    });
-
-    if (playlistResponse.error) {
-      res.status(400).send({ data: null, error: playlistResponse.error });
-    }
-
+    await playlistService.deletePlaylist(id);
     res.status(204).send();
   } catch (error) {
     next(error);
@@ -56,70 +29,13 @@ async function deletePlaylist(req, res, next) {
 
 async function updatePlaylist(req, res, next) {
   const {
-    query: { id },
-    body: { title, publicAccessible, tracks, followedBy },
-  } = req;
-
-  try {
-    const dbResponse = await PlaylistRepo.findOneAndUpdate(
-      {
-        _id: id,
-      },
-      {
-        title: title,
-        publicAccessible: publicAccessible,
-        tracks: tracks,
-        followedBy: followedBy,
-      },
-      {
-        new: true,
-      },
-    );
-
-    if (dbResponse.error) {
-      res.status(400).send({
-        data: null,
-        error: dbResponse.error,
-      });
-    }
-
-    if (dbResponse.data) {
-      res.status(200).send({
-        data: dbResponse.data,
-        error: null,
-      });
-    }
-  } catch (err) {
-    next(err);
-  }
-}
-
-async function fetchPlaylistById(req, res, next) {
-  const {
     params: { id },
-    query: { fullFetch = false },
+    body: { ...playlist }
   } = req;
 
   try {
-    const dbResponse = fullFetch
-      ? await PlaylistRepo.findPopulatedById(id, "tracks")
-      : await PlaylistRepo.findById(id);
-
-    if (dbResponse.error) {
-      res.status(400).send({
-        data: null,
-        error: dbResponse.error,
-      });
-    }
-
-    if (dbResponse.data) {
-      if (dbResponse.data) {
-        res.status(200).send({
-          data: dbResponse.data,
-          error: null,
-        });
-      }
-    }
+    const updated = playlistService.updatePlaylist(id, playlist);
+    return res.status(200).send(updated);
   } catch (err) {
     next(err);
   }
@@ -128,26 +44,18 @@ async function fetchPlaylistById(req, res, next) {
 async function fetchPlaylists(req, res, next) {
   const {
     query: { fullFetch = false, ...rest },
+    user: { uid },
   } = req;
 
   try {
-    let dbResponse = fullFetch
-      ? PlaylistRepo.findPopulated(rest, "tracks")
-      : await PlaylistRepo.find(rest);
+    const playlists = await playlistService.getPlaylists(rest, fullFetch);
+    const playlistsWithOwnedAndFollowed = playlists.map((playlist) => ({
+      ...playlist,
+      followed: playlist.followedBy.includes(uid),
+      owned: playlist.author === uid,
+    }));
 
-    if (dbResponse.error) {
-      res.status(400).send({
-        data: null,
-        error: dbResponse.error,
-      });
-    }
-
-    if (dbResponse.data) {
-      res.status(200).send({
-        data: dbResponse.data,
-        error: null,
-      });
-    }
+    return res.status(200).send(playlistsWithOwnedAndFollowed);
   } catch (err) {
     next(err);
   }
@@ -157,6 +65,5 @@ module.exports = {
   createPlaylist: createPlaylist,
   updatePlaylist: updatePlaylist,
   fetchPlaylists: fetchPlaylists,
-  fetchPlaylistById: fetchPlaylistById,
   deletePlaylist: deletePlaylist,
 };
