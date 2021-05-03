@@ -30,7 +30,8 @@ class UserService {
     const user = await userModel
       .findById(id)
       .populate("ownedTracks")
-      .select("ownedTracks");
+      .select("ownedTracks")
+      .lean();
     return user.ownedTracks;
   }
 
@@ -38,7 +39,8 @@ class UserService {
     const user = await userModel
       .findById(id)
       .populate("likedTracks")
-      .select("likedTracks");
+      .select("likedTracks")
+      .lean();
     return user.likedTracks.map((track) => ({
       ...track,
       liked: true,

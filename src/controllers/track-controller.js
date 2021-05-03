@@ -1,6 +1,8 @@
 const { trackService, genreService } = require("../services");
 const userService = require("../services/user-service.js");
 
+const ObjectId = require("mongoose").Types.ObjectId;
+
 async function createTrack(req, res, next) {
   const {
     body: { genreNames = [], ...track },
@@ -64,7 +66,9 @@ async function deleteTrack(req, res, next) {
 
   try {
     const deletedTrack = await trackService.deleteTrack(id);
-    await genreService.removeTrackFromGenres(deletedTrack.genreIds);
+    await genreService.removeTrackFromGenres(
+      deletedTrack.genreIds.map((id) => ObjectId(id)),
+    );
     return res.status(204).send();
   } catch (error) {
     next(error);
