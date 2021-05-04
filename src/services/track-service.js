@@ -9,6 +9,14 @@ class TrackService {
     return trackModel.find(filter).lean();
   }
 
+  getLikedTracksByUid(uid) {
+    return trackModel.find({ likedBy: uid }).lean();
+  }
+
+  getOwnedTracksByUid(uid) {
+    return trackModel.find({ ownedBy: uid }).lean();
+  }
+
   updateTrack(id, track) {
     return trackModel.findByIdAndUpdate(id, track, {
       new: true,

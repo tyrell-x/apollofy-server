@@ -20,7 +20,6 @@ async function createTrack(req, res, next) {
       genres.map((genre) => genre._id),
       newTrack._id,
     );
-    await userService.addOwnedTrack(uid, newTrack._id);
 
     return res.status(200).send(newTrack);
   } catch (error) {
@@ -75,9 +74,56 @@ async function deleteTrack(req, res, next) {
   }
 }
 
+async function fetchOwnedTracks(req, res, next) {
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const ownedTracks = await trackService.getOwnedTracksByUid(uid);
+    return res.status(200).send(ownedTracks);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function fetchLikedTracks(req, res, next) {
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const likedTracks = await trackService.getLikedTracksByUid(uid);
+    return res.status(200).send(likedTracks);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function likeTrack(req, res, next) {
+  const {
+    query: { id, liked },
+    user: { uid },
+  } = req;
+
+  try {
+    if (liked) {
+      await trackService.addLikedBy(id, uid);
+    } else {
+      await trackService.removeLikedBy(id, uid);
+    }
+    return res.status(200).send(liked);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createTrack: createTrack,
   deleteTrack: deleteTrack,
   updateTrack: updateTrack,
   fetchTracks: fetchTracks,
+  fetchLikedTracks: fetchLikedTracks,
+  fetchOwnedTracks: fetchOwnedTracks,
+  likeTrack: likeTrack,
 };
