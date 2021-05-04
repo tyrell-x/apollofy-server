@@ -30,12 +30,10 @@ class UserService {
     const user = await userModel
       .findById(id)
       .populate("ownedTracks")
-      .select("ownedTracks");
+      .select("ownedTracks")
+      .lean();
     return user.ownedTracks;
   }
-
-
-
 
   addFollowedPlaylist(id, playlistId) {
     return userModel.updateOne(
