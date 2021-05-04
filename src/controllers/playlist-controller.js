@@ -3,7 +3,7 @@ const { playlistService } = require("../services");
 async function createPlaylist(req, res, next) {
   const {
     user: { uid },
-    body: { ...playlist }
+    body: { ...playlist },
   } = req;
 
   try {
@@ -30,7 +30,7 @@ async function deletePlaylist(req, res, next) {
 async function updatePlaylist(req, res, next) {
   const {
     params: { id },
-    body: { ...playlist }
+    body: { ...playlist },
   } = req;
 
   try {
@@ -61,9 +61,28 @@ async function fetchPlaylists(req, res, next) {
   }
 }
 
+async function followPlaylist(req, res, next) {
+  const {
+    query: { id, followed },
+    user: { uid },
+  } = req;
+
+  try {
+    if (followed) {
+      await playlistService.addFollowedBy(id, uid);
+    } else {
+      await playlistService.removeFollowedBy(id, uid);
+    }
+    return res.status(200).send(followed);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createPlaylist: createPlaylist,
   updatePlaylist: updatePlaylist,
   fetchPlaylists: fetchPlaylists,
   deletePlaylist: deletePlaylist,
+  followPlaylist: followPlaylist,
 };

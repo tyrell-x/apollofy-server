@@ -18,6 +18,12 @@ playlistRouter.delete(
   playlistController.deletePlaylist,
 );
 
+playlistRouter.post(
+  "/follow",
+  authMiddleware,
+  playlistController.followPlaylist,
+);
+
 module.exports = {
   playlistRouter: playlistRouter,
 };

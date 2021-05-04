@@ -5,5 +5,5 @@ const { login } = require("./login");
 module.exports = {
   verifyAuthToken: verifyAuthToken,
   getAuthToken: getAuthToken,
-  login: login
+  login: login,
 };
