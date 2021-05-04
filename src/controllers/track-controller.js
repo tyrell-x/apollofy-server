@@ -1,5 +1,4 @@
 const { trackService, genreService } = require("../services");
-const userService = require("../services/user-service.js");
 
 const ObjectId = require("mongoose").Types.ObjectId;
 

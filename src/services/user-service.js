@@ -1,13 +1,12 @@
 const userModel = require("../models/user-model");
 
 class UserService {
-  findOrCreateUser(id, user) {
-    return userModel.findOneAndUpdate({ _id: id }, user, {
-      upsert: true,
-      new: true,
-      setDefaultsOnInsert: true,
-      runValidators: true,
-    });
+  async findOrCreateUser(id, user) {
+    let existing = await userModel.findById(id);
+    if (!existing) {
+      existing = await userModel.create({ ...user, _id: id });
+    }
+    return existing;
   }
 
   updateUser(id, user) {

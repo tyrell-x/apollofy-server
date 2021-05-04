@@ -1,9 +1,10 @@
-const { userService, trackService } = require("../services");
+const { userService } = require("../services");
 const { fbUpdateEmail } = require("../services/auth/auth-provider");
 
 async function signUp(req, res, next) {
   const {
     user: { uid },
+    // eslint-disable-next-line no-unused-vars
     body: { _id, ...user },
   } = req;
 

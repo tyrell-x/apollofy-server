@@ -20,16 +20,17 @@ class GenreService {
   createGenresWithNames(genreNames) {
     return Promise.all(
       genreNames.map(
-        async (name) =>
-          await genreModel.findOneAndUpdate(
-            { name: name },
-            { name: name },
-            {
-              upsert: true,
-              new: true,
-              setDefaultsOnInsert: true,
-            },
-          ),
+        async (name) => {
+          let existing = await genreModel.find({
+            name: name
+          });
+          if (!existing) {
+            existing = await genreModel.create({ 
+              name: name
+            });
+          }
+          return existing;
+        }
       ),
     );
   }
