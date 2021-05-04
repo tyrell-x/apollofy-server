@@ -9,6 +9,10 @@ class TrackService {
     return trackModel.find(filter).lean();
   }
 
+  getTrackByUser(filter = {likedBy: `${uid}`}) {
+    return trackModel.find(filter).lean();
+  }
+
   updateTrack(id, track) {
     return trackModel.findByIdAndUpdate(id, track, {
       new: true,

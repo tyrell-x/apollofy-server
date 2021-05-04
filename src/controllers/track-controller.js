@@ -31,6 +31,8 @@ async function fetchTracks(req, res, next) {
 
   try {
     const tracks = await trackService.getTracks();
+    const userLikedTracks = await trackService.getTrackByUser();
+    console.log(userLikedTracks);
     const tracksWithLikedAndOwned = tracks.map((track) => ({
       ...track,
       liked: track.likedBy.includes(uid),

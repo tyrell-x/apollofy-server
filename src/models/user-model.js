@@ -27,15 +27,6 @@ const UserSchema = Schema(
       type: Number,
       trim: true,
     },
-    likedTracks: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: "track",
-        },
-      ],
-      default: [],
-    },
     ownedTracks: {
       type: [
         {

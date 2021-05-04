@@ -34,38 +34,8 @@ class UserService {
     return user.ownedTracks;
   }
 
-  async getLikedTracks(id) {
-    const user = await userModel
-      .findById(id)
-      .populate("likedTracks")
-      .select("likedTracks");
-    return user.likedTracks.map((track) => ({
-      ...track,
-      liked: true,
-    }));
-  }
 
-  addLikedTrack(id, trackId) {
-    return userModel.updateOne(
-      { _id: id },
-      {
-        $addToSet: {
-          likedTracks: trackId,
-        },
-      },
-    );
-  }
 
-  removeLikedTrack(id, trackId) {
-    return userModel.updateOne(
-      { _id: id },
-      {
-        $pull: {
-          likedTracks: trackId,
-        },
-      },
-    );
-  }
 
   addFollowedPlaylist(id, playlistId) {
     return userModel.updateOne(
