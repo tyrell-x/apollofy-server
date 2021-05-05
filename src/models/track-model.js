@@ -31,7 +31,7 @@ const TrackSchema = Schema(
     genreIds: {
       type: [
         {
-          type: String,
+          type: Schema.Types.ObjectId,
           ref: "genre",
         },
       ],

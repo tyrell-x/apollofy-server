@@ -19,9 +19,9 @@ class GenreService {
 
   createGenresWithNames(genreNames) {
     return Promise.all(
-      genreNames.map(
+      genreNames.map(name => name.toLowerCase()).map(
         async (name) => {
-          let existing = await genreModel.find({
+          let existing = await genreModel.findOne({
             name: name
           });
           if (!existing) {
