@@ -23,6 +23,7 @@ playlistRouter.post(
   authMiddleware,
   playlistController.followPlaylist,
 );
+playlistRouter.post("/playlist/track", authMiddleware, playlistController.addTrackToPlaylist)
 
 module.exports = {
   playlistRouter: playlistRouter,

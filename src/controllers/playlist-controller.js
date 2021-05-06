@@ -1,4 +1,6 @@
-const { playlistService } = require("../services");
+const { response } = require("express");
+const Playlist = require("../models/playlist-model");
+const { playlistService, trackService } = require("../services");
 
 async function createPlaylist(req, res, next) {
   const {
@@ -34,7 +36,7 @@ async function updatePlaylist(req, res, next) {
   } = req;
 
   try {
-    const updated = playlistService.updatePlaylist(id, playlist);
+    const updated = await playlistService.updatePlaylists(id, playlist);
     return res.status(200).send(updated);
   } catch (err) {
     next(err);
@@ -79,10 +81,26 @@ async function followPlaylist(req, res, next) {
   }
 }
 
+async function addTrackToPlaylist(req, res, next) {
+  const {
+    query: { id },
+    body: { trackId },
+  } = req;
+
+  try {
+    const response = await playlistService.addTrackToPlaylist(id, trackId);
+    return res.status(200).send(response);
+  } catch (error) {
+    next(error);
+  }
+
+}
+
 module.exports = {
   createPlaylist: createPlaylist,
   updatePlaylist: updatePlaylist,
   fetchPlaylists: fetchPlaylists,
   deletePlaylist: deletePlaylist,
   followPlaylist: followPlaylist,
+  addTrackToPlaylist: addTrackToPlaylist,
 };

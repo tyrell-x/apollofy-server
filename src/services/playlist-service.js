@@ -16,7 +16,9 @@ class PlaylistService {
 
   addTrackToPlaylist(id, trackId) {
     return playlistModel.updateOne(
-      { _id: id },
+      {
+        _id: id,
+      },
       {
         $addToSet: {
           tracks: trackId,
