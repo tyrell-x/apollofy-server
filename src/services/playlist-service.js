@@ -38,7 +38,7 @@ class PlaylistService {
     );
   }
 
-  updatePlaylists(id, playlist) {
+  updatePlaylist(id, playlist) {
     return playlistModel.findByIdAndUpdate(id, playlist, {
       new: true,
     });

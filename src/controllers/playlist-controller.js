@@ -1,6 +1,4 @@
-const { response } = require("express");
-const Playlist = require("../models/playlist-model");
-const { playlistService, trackService } = require("../services");
+const { playlistService } = require("../services");
 
 async function createPlaylist(req, res, next) {
   const {
@@ -36,7 +34,7 @@ async function updatePlaylist(req, res, next) {
   } = req;
 
   try {
-    const updated = await playlistService.updatePlaylists(id, playlist);
+    const updated = await playlistService.updatePlaylist(id, playlist);
     return res.status(200).send(updated);
   } catch (err) {
     next(err);
