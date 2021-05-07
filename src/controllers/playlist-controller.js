@@ -81,17 +81,21 @@ async function followPlaylist(req, res, next) {
 
 async function addTrackToPlaylist(req, res, next) {
   const {
-    query: { id },
+    query: { id, track},
     body: { trackId },
   } = req;
-
+// console.log(track);
   try {
-    const response = await playlistService.addTrackToPlaylist(id, trackId);
-    return res.status(200).send(response);
+    if (track) {
+      await playlistService.addTrackToPlaylist(id, trackId);
+    } else {
+      await playlistService.removeTrackFromPlaylist(id, trackId)
+    }
+
+    return res.status(200).send(track);
   } catch (error) {
     next(error);
   }
-
 }
 
 module.exports = {
