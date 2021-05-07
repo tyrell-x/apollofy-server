@@ -84,7 +84,7 @@ async function addTrackToPlaylist(req, res, next) {
     query: { id, track},
     body: { trackId },
   } = req;
-// console.log(track);
+
   try {
     if (track) {
       await playlistService.addTrackToPlaylist(id, trackId);
