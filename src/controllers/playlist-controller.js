@@ -34,7 +34,7 @@ async function updatePlaylist(req, res, next) {
   } = req;
 
   try {
-    const updated = playlistService.updatePlaylist(id, playlist);
+    const updated = await playlistService.updatePlaylist(id, playlist);
     return res.status(200).send(updated);
   } catch (err) {
     next(err);
@@ -79,10 +79,30 @@ async function followPlaylist(req, res, next) {
   }
 }
 
+async function addTrackToPlaylist(req, res, next) {
+  const {
+    query: { id, track},
+    body: { trackId },
+  } = req;
+
+  try {
+    if (track) {
+      await playlistService.addTrackToPlaylist(id, trackId);
+    } else {
+      await playlistService.removeTrackFromPlaylist(id, trackId)
+    }
+
+    return res.status(200).send(track);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createPlaylist: createPlaylist,
   updatePlaylist: updatePlaylist,
   fetchPlaylists: fetchPlaylists,
   deletePlaylist: deletePlaylist,
   followPlaylist: followPlaylist,
+  addTrackToPlaylist: addTrackToPlaylist,
 };
