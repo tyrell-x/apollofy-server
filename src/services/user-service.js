@@ -28,6 +28,16 @@ class UserService {
     });
   }
 
+  getFollowers(uid){
+    return userModel.find({
+      followedBy: {
+        $elemMatch: {
+          $eq: uid
+        }
+      }
+    });
+  }
+
   updateEmail(id, email) {
     return userModel.updateOne(
       {
