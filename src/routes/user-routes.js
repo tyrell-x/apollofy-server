@@ -14,6 +14,7 @@ userRouter.put("/me", authMiddleware, userController.userEdit);
 userRouter.get("/me", authMiddleware, userController.fetchUserById);
 userRouter.get("/me/playlists", authMiddleware, userController.fetchOwnedPlaylist);
 userRouter.get("/me/following", authMiddleware, userController.fetchFollowing);
+userRouter.get("/me/followers", authMiddleware, userController.fetchFollowers);
 
 module.exports = {
   userRouter: userRouter,
