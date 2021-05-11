@@ -93,27 +93,11 @@ async function fetchFollowing(req, res, next){
   }
 }
 
-async function fetchFollowers(req, res, next){
-  const {
-    user: { uid },
-  } = req;
-
-  try {
-    const following = await userService.getFollowing(uid);
-
-    res.status(200).send(following)
-  } catch (error) {
-    next(error)
-  }
-}
-
-
 module.exports = {
   signUp: signUp,
   updateEmail: updateEmail,
   fetchUserById: fetchUserById,
   fetchOwnedPlaylist: fetchOwnedPlaylist,
   fetchFollowing: fetchFollowing,
-  fetchFollowers: fetchFollowers,
   userEdit: userEdit,
 };
