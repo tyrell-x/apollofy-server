@@ -1,3 +1,4 @@
+const e = require("express");
 const userModel = require("../models/user-model");
 
 class UserService {
@@ -9,21 +10,46 @@ class UserService {
     return existing;
   }
 
-  updateUser(id, user) {
+  getUserById(id) {
+    return userModel.findById(id);
+  }
+
+  getUsers(filter = {}) {
+    return userModel.find(filter).lean();
+  }
+
+  getFollowing(uid){
+    return userModel.find({
+      followedBy: {
+        $elemMatch: {
+          $eq: uid
+        }
+      }
+    });
+  }
+
+  updateEmail(id, email) {
     return userModel.updateOne(
       {
         _id: id,
       },
-      user,
+      {
+        $set: {
+          email: email,
+        },
+      },
       {
         new: true,
       },
     );
   }
 
-  getUserById(id) {
-    return userModel.findById(id);
+  updateUser(id, user) {
+    return userModel.findByIdAndUpdate(id, user, {
+      new: true,
+    });
   }
+
 }
 
 module.exports = new UserService();
