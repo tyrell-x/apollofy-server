@@ -11,7 +11,7 @@ class UserService {
   }
 
   getUserById(id) {
-    return userModel.findById(id);
+    return userModel.findById(id).populate("followedBy");
   }
 
   getUsers(filter = {}) {
