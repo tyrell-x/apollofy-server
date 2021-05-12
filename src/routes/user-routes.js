@@ -11,9 +11,11 @@ userRouter.patch("/me/edit-email", authMiddleware, userController.updateEmail);
 userRouter.put("/me", authMiddleware, userController.userEdit);
 
 
-userRouter.get("/me", authMiddleware, userController.fetchUserById);
+userRouter.get("/me", authMiddleware, userController.fetchCurrentUser);
 userRouter.get("/me/playlists", authMiddleware, userController.fetchOwnedPlaylist);
-userRouter.get("/me/following", authMiddleware, userController.fetchFollowing);
+
+userRouter.get("/:id/following", authMiddleware, userController.fetchFollowing);
+// userRouter.get("/:id", authMiddleware, userController.fetchUserById);
 
 module.exports = {
   userRouter: userRouter,

@@ -52,14 +52,19 @@ async function updateEmail(req, res, next) {
 }
 
 
-async function fetchUserById(req, res, next){
+async function fetchCurrentUser(req, res, next){
   const {
     user: { uid }
   } = req;
 
   try {
-    const response = await userService.getUserById(uid);
-    res.status(200).send(response);
+    const user = await userService.getUserById(uid);
+    const following = await userService.getFollowing(uid);
+    const fullUser = {
+      ...user,
+      following: following
+    }
+    res.status(200).send(fullUser);
   } catch (error) {
     next(error)
   }
@@ -96,7 +101,7 @@ async function fetchFollowing(req, res, next){
 module.exports = {
   signUp: signUp,
   updateEmail: updateEmail,
-  fetchUserById: fetchUserById,
+  fetchCurrentUser: fetchCurrentUser,
   fetchOwnedPlaylist: fetchOwnedPlaylist,
   fetchFollowing: fetchFollowing,
   userEdit: userEdit,
