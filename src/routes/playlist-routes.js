@@ -7,11 +7,27 @@ const playlistRouter = Router();
 
 playlistRouter.get("/", authMiddleware, playlistController.fetchPlaylists);
 playlistRouter.post("/", authMiddleware, playlistController.createPlaylist);
-playlistRouter.put("/edit/:id", authMiddleware, playlistController.updatePlaylist);
-playlistRouter.delete("/:id", authMiddleware, playlistController.deletePlaylist);
+playlistRouter.put(
+  "/edit/:id",
+  authMiddleware,
+  playlistController.updatePlaylist,
+);
+playlistRouter.delete(
+  "/:id",
+  authMiddleware,
+  playlistController.deletePlaylist,
+);
 
-playlistRouter.post("/follow", authMiddleware, playlistController.followPlaylist);
-playlistRouter.post("/track", authMiddleware, playlistController.addTrackToPlaylist)
+playlistRouter.post(
+  "/follow",
+  authMiddleware,
+  playlistController.followPlaylist,
+);
+playlistRouter.post(
+  "/track",
+  authMiddleware,
+  playlistController.addTrackToPlaylist,
+);
 
 module.exports = {
   playlistRouter: playlistRouter,

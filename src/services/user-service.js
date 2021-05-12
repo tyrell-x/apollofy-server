@@ -15,16 +15,16 @@ class UserService {
   }
 
   getUsers(filter = {}) {
-    return userModel.find(filter).populate('followedBy').lean();
+    return userModel.find(filter).populate("followedBy").lean();
   }
 
-  getFollowing(uid){
+  getFollowing(uid) {
     return userModel.find({
       followedBy: {
         $elemMatch: {
-          $eq: uid
-        }
-      }
+          $eq: uid,
+        },
+      },
     });
   }
 
@@ -71,7 +71,6 @@ class UserService {
       },
     );
   }
-
 }
 
 module.exports = new UserService();

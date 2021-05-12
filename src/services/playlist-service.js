@@ -14,8 +14,8 @@ class PlaylistService {
       : playlistModel.find(filter).lean();
   }
 
-  getOwnedPlaylist(uid){
-    return playlistModel.find({"author": uid}).populate("tracks").lean();
+  getOwnedPlaylist(uid) {
+    return playlistModel.find({ author: uid }).populate("tracks").lean();
   }
 
   addTrackToPlaylist(id, trackId) {

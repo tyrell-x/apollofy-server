@@ -20,7 +20,7 @@ async function signUp(req, res, next) {
   }
 }
 
-async function userEdit(req, res, next){
+async function userEdit(req, res, next) {
   const {
     user: { uid },
     body: { ...user },
@@ -51,10 +51,9 @@ async function updateEmail(req, res, next) {
   }
 }
 
-
-async function fetchCurrentUser(req, res, next){
+async function fetchCurrentUser(req, res, next) {
   const {
-    user: { uid }
+    user: { uid },
   } = req;
 
   try {
@@ -62,15 +61,15 @@ async function fetchCurrentUser(req, res, next){
     const following = await userService.getFollowing(uid);
     const fullUser = {
       ...user,
-      following: following
-    }
+      following: following,
+    };
     res.status(200).send(fullUser);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
-async function fetchOwnedPlaylist(req, res, next){
+async function fetchOwnedPlaylist(req, res, next) {
   const {
     user: { uid },
   } = req;
@@ -80,11 +79,11 @@ async function fetchOwnedPlaylist(req, res, next){
 
     res.status(200).send(playlists);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
-async function fetchFollowing(req, res, next){
+async function fetchFollowing(req, res, next) {
   const {
     user: { uid },
   } = req;
@@ -92,16 +91,14 @@ async function fetchFollowing(req, res, next){
   try {
     const following = await userService.getFollowing(uid);
 
-    res.status(200).send(following)
+    res.status(200).send(following);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
 async function fetchUserById(req, res, next) {
-  const {
-    params: uid,
-  } = req;
+  const { params: uid } = req;
 
   try {
     const user = await userService.getUserById(uid);
@@ -109,23 +106,22 @@ async function fetchUserById(req, res, next) {
 
     const getUserInfo = user.followedBy.map((user) => ({
       ...user,
-      following: following
+      following: following,
     }));
 
     res.status(200).send(getUserInfo);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
 async function fetchAllUsers(req, res, next) {
-
   try {
     const users = await userService.getUsers();
 
     res.status(200).send(users);
   } catch (error) {
-    next(error)
+    next(error);
   }
 }
 
