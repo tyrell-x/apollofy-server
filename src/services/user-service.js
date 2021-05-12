@@ -1,4 +1,3 @@
-const e = require("express");
 const userModel = require("../models/user-model");
 
 class UserService {
@@ -11,7 +10,7 @@ class UserService {
   }
 
   getUserById(id) {
-    return userModel.findById(id).populate("followedBy");
+    return userModel.findById(id).populate("followedBy").lean();
   }
 
   getUsers(filter = {}) {
