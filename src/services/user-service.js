@@ -50,6 +50,28 @@ class UserService {
     });
   }
 
+  addFollowedBy(uid, id) {
+    return userModel.updateOne(
+      { _id: uid },
+      {
+        $addToSet: {
+          followedBy: id,
+        },
+      },
+    );
+  }
+
+  removeFollowedBy(uid, id) {
+    return userModel.updateOne(
+      { _id: uid },
+      {
+        $pull: {
+          followedBy: id,
+        },
+      },
+    );
+  }
+
 }
 
 module.exports = new UserService();

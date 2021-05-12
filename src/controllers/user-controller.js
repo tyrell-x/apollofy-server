@@ -98,11 +98,63 @@ async function fetchFollowing(req, res, next){
   }
 }
 
+async function fetchUserById(req, res, next) {
+  const {
+    params: uid,
+  } = req;
+
+  try {
+    const user = await userService.getUserById(uid);
+    const following = await userService.getFollowing(uid);
+
+    const getUserInfo = user.followedBy.map((user) => ({
+      ...user,
+      following: following
+    }));
+
+    res.status(200).send(getUserInfo);
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function fetchAllUsers(req, res, next) {
+
+  try {
+    const users = await userService.getUsers();
+
+    res.status(200).send(users);
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function followUser(req, res, next) {
+  const {
+    query: { id, followed },
+    user: { uid },
+  } = req;
+
+  try {
+    if (followed) {
+      await userService.addFollowedBy(uid, id);
+    } else {
+      await userService.removeFollowedBy(uid, id);
+    }
+    return res.status(200).send(followed);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   signUp: signUp,
   updateEmail: updateEmail,
   fetchCurrentUser: fetchCurrentUser,
   fetchOwnedPlaylist: fetchOwnedPlaylist,
   fetchFollowing: fetchFollowing,
+  fetchUserById: fetchUserById,
+  fetchAllUsers: fetchAllUsers,
   userEdit: userEdit,
+  followUser: followUser,
 };
