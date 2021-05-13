@@ -104,10 +104,11 @@ async function fetchUserById(req, res, next) {
     const user = await userService.getUserById(uid);
     const following = await userService.getFollowing(uid);
 
-    const getUserInfo = user.followedBy.map((user) => ({
+    const getUserInfo = {
       ...user,
       following: following,
-    }));
+    };
+    console.log(getUserInfo);
 
     res.status(200).send(getUserInfo);
   } catch (error) {
@@ -118,8 +119,15 @@ async function fetchUserById(req, res, next) {
 async function fetchAllUsers(req, res, next) {
   try {
     const users = await userService.getUsers();
+    const fullUser =  await Promise.all(users.map(async (user) => {
+      const following = await userService.getFollowing(user._id);
+      return {
+        ...user,
+        following: following,
+      }
+    }));
 
-    res.status(200).send(users);
+    res.status(200).send(fullUser);
   } catch (error) {
     next(error);
   }
