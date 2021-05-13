@@ -49,6 +49,14 @@ class UserService {
     });
   }
 
+  findUsers(text) {
+    return userModel
+    .find({
+      firstName: {
+        $regex: `.*${text}.*`
+      }
+    });
+  }
 }
 
 module.exports = new UserService();

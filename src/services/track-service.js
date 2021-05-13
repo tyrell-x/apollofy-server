@@ -48,6 +48,15 @@ class TrackService {
   deleteTrack(id) {
     return trackModel.findByIdAndDelete(id);
   }
+
+  findTracks(text) {
+    return trackModel
+    .find({
+      title: {
+        $regex: `.*${text}.*`
+      }
+    });
+  }
 }
 
 module.exports = new TrackService();
