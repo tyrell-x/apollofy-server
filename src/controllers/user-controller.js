@@ -1,4 +1,4 @@
-const { userService } = require("../services");
+const { userService, playlistService } = require("../services");
 const { fbUpdateEmail } = require("../services/auth/auth-provider");
 
 async function signUp(req, res, next) {
@@ -20,28 +20,89 @@ async function signUp(req, res, next) {
   }
 }
 
-async function updateUser(req, res, next) {
+async function changeUser(req, res, next){
+  const {
+    user: { uid },
+    body: { ...user },
+  } = req;
+
+  try {
+    const updated = await userService.updateUser(uid, user);
+    return res.status(200).send(updated);
+  } catch (err) {
+    next(err);
+  }
+}
+
+async function updateEmail(req, res, next) {
   const {
     user: { uid },
     body: { email },
   } = req;
 
-  const user = req.body;
-
   try {
     if (email) {
       await fbUpdateEmail(uid, email);
     }
-
-    const updated = userService.updateUser(uid, user);
-
+    const updated = await userService.updateEmail(uid, email);
     res.status(200).send(updated);
   } catch (error) {
     next(error);
   }
 }
 
+
+async function fetchCurrentUser(req, res, next){
+  const {
+    user: { uid }
+  } = req;
+
+  try {
+    const user = await userService.getUserById(uid);
+    const following = await userService.getFollowing(uid);
+    const fullUser = {
+      ...user,
+      following: following
+    }
+    res.status(200).send(fullUser);
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function fetchOwnedPlaylist(req, res, next){
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const playlists = await playlistService.getOwnedPlaylist(uid);
+
+    res.status(200).send(playlists);
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function fetchFollowing(req, res, next){
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const following = await userService.getFollowing(uid);
+
+    res.status(200).send(following)
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   signUp: signUp,
-  updateUser: updateUser,
+  updateEmail: updateEmail,
+  fetchCurrentUser: fetchCurrentUser,
+  fetchOwnedPlaylist: fetchOwnedPlaylist,
+  fetchFollowing: fetchFollowing,
+  changeUser: changeUser,
 };

@@ -36,7 +36,6 @@ async function fetchTracks(req, res, next) {
       liked: track.likedBy.includes(uid),
       owned: track.ownedBy === uid,
     }));
-
     return res.status(200).send(tracksWithLikedAndOwned);
   } catch (error) {
     next(error);
