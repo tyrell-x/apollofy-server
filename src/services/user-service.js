@@ -3,7 +3,7 @@ const userModel = require("../models/user-model");
 
 class UserService {
   async findOrCreateUser(id, user) {
-    let existing = await userModel.findById(id).populate("followedBy");
+    let existing = await userModel.findById(id).populate("followedBy").lean();
     if (!existing) {
       existing = await userModel.create({ ...user, _id: id });
     }
@@ -11,7 +11,7 @@ class UserService {
   }
 
   getUserById(id) {
-    return userModel.findById(id).populate("followedBy");
+    return userModel.findById(id).populate("followedBy").lean();
   }
 
   getUsers(filter = {}) {

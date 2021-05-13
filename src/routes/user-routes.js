@@ -16,7 +16,6 @@ userRouter.get("/:_id", authMiddleware, userController.fetchUserById);
 userRouter.patch("/me/edit-email", authMiddleware, userController.updateEmail);
 userRouter.put("/me", authMiddleware, userController.changeUser);
 
-
 userRouter.get("/me/playlists", authMiddleware, userController.fetchOwnedPlaylist);
 userRouter.get("/:id/following", authMiddleware, userController.fetchFollowing);
 
