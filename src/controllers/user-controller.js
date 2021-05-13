@@ -20,7 +20,7 @@ async function signUp(req, res, next) {
   }
 }
 
-async function userEdit(req, res, next) {
+async function changeUser(req, res, next){
   const {
     user: { uid },
     body: { ...user },
@@ -143,6 +143,53 @@ async function followUser(req, res, next) {
   }
 }
 
+
+async function fetchCurrentUser(req, res, next){
+  const {
+    user: { uid }
+  } = req;
+
+  try {
+    const user = await userService.getUserById(uid);
+    const following = await userService.getFollowing(uid);
+    const fullUser = {
+      ...user,
+      following: following
+    }
+    res.status(200).send(fullUser);
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function fetchOwnedPlaylist(req, res, next){
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const playlists = await playlistService.getOwnedPlaylist(uid);
+
+    res.status(200).send(playlists);
+  } catch (error) {
+    next(error)
+  }
+}
+
+async function fetchFollowing(req, res, next){
+  const {
+    user: { uid },
+  } = req;
+
+  try {
+    const following = await userService.getFollowing(uid);
+
+    res.status(200).send(following)
+  } catch (error) {
+    next(error)
+  }
+}
+
 module.exports = {
   signUp: signUp,
   updateEmail: updateEmail,
@@ -151,6 +198,6 @@ module.exports = {
   fetchFollowing: fetchFollowing,
   fetchUserById: fetchUserById,
   fetchAllUsers: fetchAllUsers,
-  userEdit: userEdit,
   followUser: followUser,
+  changeUser: changeUser,
 };
