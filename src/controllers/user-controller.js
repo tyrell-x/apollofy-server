@@ -20,7 +20,7 @@ async function signUp(req, res, next) {
   }
 }
 
-async function userEdit(req, res, next){
+async function changeUser(req, res, next){
   const {
     user: { uid },
     body: { ...user },
@@ -104,5 +104,5 @@ module.exports = {
   fetchCurrentUser: fetchCurrentUser,
   fetchOwnedPlaylist: fetchOwnedPlaylist,
   fetchFollowing: fetchFollowing,
-  userEdit: userEdit,
+  changeUser: changeUser,
 };
