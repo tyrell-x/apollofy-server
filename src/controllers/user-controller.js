@@ -108,7 +108,6 @@ async function fetchUserById(req, res, next) {
       ...user,
       following: following,
     };
-    console.log(getUserInfo);
 
     res.status(200).send(getUserInfo);
   } catch (error) {
