@@ -14,7 +14,12 @@ async function signUp(req, res, next) {
 
   try {
     const current = await userService.findOrCreateUser(uid, user);
-    res.status(200).send(current);
+    const following = await userService.getFollowing(uid);
+    const fullUser = {
+      ...current,
+      following: following,
+    };
+    res.status(200).send(fullUser);
   } catch (error) {
     next(error);
   }
@@ -147,53 +152,6 @@ async function followUser(req, res, next) {
     return res.status(200).send(followed);
   } catch (error) {
     next(error);
-  }
-}
-
-
-async function fetchCurrentUser(req, res, next){
-  const {
-    user: { uid }
-  } = req;
-
-  try {
-    const user = await userService.getUserById(uid);
-    const following = await userService.getFollowing(uid);
-    const fullUser = {
-      ...user,
-      following: following
-    }
-    res.status(200).send(fullUser);
-  } catch (error) {
-    next(error)
-  }
-}
-
-async function fetchOwnedPlaylist(req, res, next){
-  const {
-    user: { uid },
-  } = req;
-
-  try {
-    const playlists = await playlistService.getOwnedPlaylist(uid);
-
-    res.status(200).send(playlists);
-  } catch (error) {
-    next(error)
-  }
-}
-
-async function fetchFollowing(req, res, next){
-  const {
-    user: { uid },
-  } = req;
-
-  try {
-    const following = await userService.getFollowing(uid);
-
-    res.status(200).send(following)
-  } catch (error) {
-    next(error)
   }
 }
 

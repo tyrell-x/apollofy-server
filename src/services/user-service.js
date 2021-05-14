@@ -1,4 +1,3 @@
-const e = require("express");
 const userModel = require("../models/user-model");
 
 class UserService {
