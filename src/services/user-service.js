@@ -2,7 +2,7 @@ const userModel = require("../models/user-model");
 
 class UserService {
   async findOrCreateUser(id, user) {
-    let existing = await userModel.findById(id).populate("followedBy");
+    let existing = await userModel.findById(id).populate("followedBy").lean();
     if (!existing) {
       existing = await userModel.create({ ...user, _id: id });
     }
@@ -14,16 +14,16 @@ class UserService {
   }
 
   getUsers(filter = {}) {
-    return userModel.find(filter).populate('followedBy').lean();
+    return userModel.find(filter).populate("followedBy").lean();
   }
 
-  getFollowing(uid){
+  getFollowing(uid) {
     return userModel.find({
       followedBy: {
         $elemMatch: {
-          $eq: uid
-        }
-      }
+          $eq: uid,
+        },
+      },
     });
   }
 
@@ -57,6 +57,29 @@ class UserService {
       }
     });
   }
+
+  addFollowedBy(uid, id) {
+    return userModel.updateOne(
+      { _id: uid },
+      {
+        $addToSet: {
+          followedBy: id,
+        },
+      },
+    );
+  }
+
+  removeFollowedBy(uid, id) {
+    return userModel.updateOne(
+      { _id: uid },
+      {
+        $pull: {
+          followedBy: id,
+        },
+      },
+    );
+  }
+
 }
 
 module.exports = new UserService();
