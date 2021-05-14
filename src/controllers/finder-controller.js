@@ -11,7 +11,7 @@ async function find(req, res, next) {
     const tracks = await trackService.findTracks(text);
     const users = await userService.findUsers(text);
     return res.status(200).send({
-      playlists, tracks, users
+      playlists: playlists.splice(0,6), tracks: tracks.splice(0,6), users: users.splice(0,6)
     });
   } catch (err) {
     next(err);

@@ -49,24 +49,30 @@ class PlaylistService {
   }
 
   addFollowedBy(id, uid) {
-    return playlistModel.updateOne(
-      { _id: id },
+    return playlistModel.findByIdAndUpdate(
+      id,
       {
         $addToSet: {
           followedBy: uid,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
   removeFollowedBy(id, uid) {
-    return playlistModel.updateOne(
-      { _id: id },
+    return playlistModel.findByIdAndUpdate(
+      id,
       {
         $pull: {
           followedBy: uid,
         },
       },
+      {
+        new: true
+      }
     );
   }
 

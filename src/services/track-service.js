@@ -24,24 +24,30 @@ class TrackService {
   }
 
   addLikedBy(id, uid) {
-    return trackModel.updateOne(
-      { _id: id },
+    return trackModel.findByIdAndUpdate(
+      id,
       {
         $addToSet: {
           likedBy: uid,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
   removeLikedBy(id, uid) {
-    return trackModel.updateOne(
-      { _id: id },
+    return trackModel.findByIdAndUpdate(
+      id,
       {
         $pull: {
           likedBy: uid,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
