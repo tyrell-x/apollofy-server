@@ -25,7 +25,7 @@ async function signUp(req, res, next) {
   }
 }
 
-async function changeUser(req, res, next){
+async function changeUser(req, res, next) {
   const {
     user: { uid },
     body: { ...user },
@@ -123,13 +123,15 @@ async function fetchUserById(req, res, next) {
 async function fetchAllUsers(req, res, next) {
   try {
     const users = await userService.getUsers();
-    const fullUser =  await Promise.all(users.map(async (user) => {
-      const following = await userService.getFollowing(user._id);
-      return {
-        ...user,
-        following: following,
-      }
-    }));
+    const fullUser = await Promise.all(
+      users.map(async (user) => {
+        const following = await userService.getFollowing(user._id);
+        return {
+          ...user,
+          following: following,
+        };
+      }),
+    );
 
     res.status(200).send(fullUser);
   } catch (error) {
@@ -144,12 +146,19 @@ async function followUser(req, res, next) {
   } = req;
 
   try {
-    if (followed) {
-      await userService.addFollowedBy(uid, id);
-    } else {
-      await userService.removeFollowedBy(uid, id);
-    }
-    return res.status(200).send(followed);
+    followed
+      ? await userService.addFollowedBy(id, uid)
+      : await userService.removeFollowedBy(id, uid);
+
+    const user = await userService.getUserById(uid);
+    const following = await userService.getFollowing(uid);
+
+    const getUserInfo = {
+      ...user,
+      following: following,
+    };
+
+    res.status(200).send(getUserInfo);
   } catch (error) {
     next(error);
   }

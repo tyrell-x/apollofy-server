@@ -50,8 +50,7 @@ class UserService {
   }
 
   findUsers(text) {
-    return userModel
-    .find({
+    return userModel.find({
       firstName: {
         $regex: `.*${text}.*`
       }
@@ -59,24 +58,30 @@ class UserService {
   }
 
   addFollowedBy(uid, id) {
-    return userModel.updateOne(
-      { _id: uid },
+    return userModel.findByIdAndUpdate(
+      uid,
       {
         $addToSet: {
           followedBy: id,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
   removeFollowedBy(uid, id) {
-    return userModel.updateOne(
-      { _id: uid },
+    return userModel.findByIdAndUpdate(
+      uid,
       {
         $pull: {
           followedBy: id,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
