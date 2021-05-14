@@ -4,21 +4,24 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 async function createTrack(req, res, next) {
   const {
+    // eslint-disable-next-line no-unused-vars
     body: { genreNames = [], ...track },
     user: { uid },
   } = req;
 
   try {
-    const genres = await genreService.createGenresWithNames(genreNames);
+    //const genres = await genreService.createGenresWithNames(genreNames.filter(genre => genre));
     const newTrack = await trackService.createTrack({
       ...track,
-      genreIds: genres.map((genre) => genre._id),
+      //genreIds: genres.map((genre) => genre._id),
       ownedBy: uid,
     });
+    /*
     await genreService.addTrackToGenres(
       genres.map((genre) => genre._id),
       newTrack._id,
     );
+      */
 
     return res.status(200).send(newTrack);
   } catch (error) {
@@ -27,16 +30,9 @@ async function createTrack(req, res, next) {
 }
 
 async function fetchTracks(req, res, next) {
-  const { uid } = req.user;
-
   try {
     const tracks = await trackService.getTracks();
-    const tracksWithLikedAndOwned = tracks.map((track) => ({
-      ...track,
-      liked: track.likedBy.includes(uid),
-      owned: track.ownedBy === uid,
-    }));
-    return res.status(200).send(tracksWithLikedAndOwned);
+    return res.status(200).send(tracks);
   } catch (error) {
     next(error);
   }
@@ -105,12 +101,11 @@ async function likeTrack(req, res, next) {
   } = req;
 
   try {
-    if (liked) {
-      await trackService.addLikedBy(id, uid);
-    } else {
-      await trackService.removeLikedBy(id, uid);
-    }
-    return res.status(200).send(liked);
+    const track = liked ?
+    await trackService.addLikedBy(id, uid) :
+    await trackService.removeLikedBy(id, uid);
+
+    return res.status(200).send(track);
   } catch (error) {
     next(error);
   }

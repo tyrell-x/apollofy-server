@@ -44,18 +44,11 @@ async function updatePlaylist(req, res, next) {
 async function fetchPlaylists(req, res, next) {
   const {
     query: { fullFetch = false, ...rest },
-    user: { uid },
   } = req;
 
   try {
     const playlists = await playlistService.getPlaylists(rest, fullFetch);
-    const playlistsWithOwnedAndFollowed = playlists.map((playlist) => ({
-      ...playlist,
-      followed: playlist.followedBy.includes(uid),
-      owned: playlist.author === uid,
-    }));
-
-    return res.status(200).send(playlistsWithOwnedAndFollowed);
+    return res.status(200).send(playlists);
   } catch (err) {
     next(err);
   }
@@ -68,12 +61,11 @@ async function followPlaylist(req, res, next) {
   } = req;
 
   try {
-    if (followed) {
-      await playlistService.addFollowedBy(id, uid);
-    } else {
-      await playlistService.removeFollowedBy(id, uid);
-    }
-    return res.status(200).send(followed);
+    const playlist = followed
+      ? await playlistService.addFollowedBy(id, uid)
+      : await playlistService.removeFollowedBy(id, uid);
+
+    return res.status(200).send(playlist);
   } catch (error) {
     next(error);
   }

@@ -10,7 +10,7 @@ class UserService {
   }
 
   getUserById(id) {
-    return userModel.findOne({_id: id}).populate("followedBy").lean();
+    return userModel.findById(id).populate("followedBy").lean();
   }
 
   getUsers(filter = {}) {
@@ -46,6 +46,15 @@ class UserService {
   updateUser(id, user) {
     return userModel.findByIdAndUpdate(id, user, {
       new: true,
+    });
+  }
+
+  findUsers(text) {
+    return userModel
+    .find({
+      firstName: {
+        $regex: `.*${text}.*`
+      }
     });
   }
 

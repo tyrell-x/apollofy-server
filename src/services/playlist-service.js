@@ -14,8 +14,8 @@ class PlaylistService {
       : playlistModel.find(filter).lean();
   }
 
-  getOwnedPlaylist(uid){
-    return playlistModel.find({"author": uid}).populate("tracks").lean();
+  getOwnedPlaylist(uid) {
+    return playlistModel.find({ author: uid }).populate("tracks").lean();
   }
 
   addTrackToPlaylist(id, trackId) {
@@ -49,29 +49,46 @@ class PlaylistService {
   }
 
   addFollowedBy(id, uid) {
-    return playlistModel.updateOne(
-      { _id: id },
+    return playlistModel.findByIdAndUpdate(
+      id,
       {
         $addToSet: {
           followedBy: uid,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
   removeFollowedBy(id, uid) {
-    return playlistModel.updateOne(
-      { _id: id },
+    return playlistModel.findByIdAndUpdate(
+      id,
       {
         $pull: {
           followedBy: uid,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
   deletePlaylist(id) {
     return playlistModel.findByIdAndDelete(id);
+  }
+
+  findPlaylists(text) {
+    return playlistModel
+      .find({
+        title: {
+          $regex: `.*${text}.*`
+        }
+      })
+      .populate("tracks")
+      .lean();
   }
 }
 
